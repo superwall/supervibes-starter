@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-\_\_sv_projectOverview
+<ProjectOverview/>
 
 ## Modern Swift Development
 
