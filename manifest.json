@@ -1,38 +1,41 @@
 {
   "type": "supervibes-starter-manifest",
-  "ios-swiftui": {
-    "name": "Supervibes iOS SwiftUI Starter",
-    "tags": ["ios", "swiftui", "supervibes"],
-    "description": "A simple SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.",
-    "variables": [
-      {
-        "name": "__sv_projectName",
-        "description": "The internal name for your iOS project",
-        "default": "MyProject",
-        "placeholder": "MyProject",
-        "help": null
-      },
-      {
-        "name": "__sv_developmentTeam",
-        "description": "Your Apple Developer Team ID",
-        "default": null,
-        "placeholder": null,
-        "help": "Found in your Apple Developer account under Membership Details"
-      },
-      {
-        "name": "__sv_displayName",
-        "description": "The name users will see on their device",
-        "default": null,
-        "placeholder": null,
-        "help": null
-      },
-      {
-        "name": "<ProjectOverview/>",
-        "description": "A brief overview of the project",
-        "default": null,
-        "placeholder": null,
-        "help": null
-      }
-    ]
-  }
+  "templates": [
+    {
+      "folder": "ios-swiftui",
+      "name": "iOS SwiftUI Starter",
+      "tags": ["ios", "swiftui", "supervibes"],
+      "description": "A simple SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.",
+      "variables": [
+        {
+          "name": "__sv_projectName",
+          "description": "The internal name for your iOS project",
+          "default": "MyProject",
+          "placeholder": "MyProject",
+          "help": null
+        },
+        {
+          "name": "__sv_developmentTeam",
+          "description": "Your Apple Developer Team ID",
+          "default": null,
+          "placeholder": null,
+          "help": "Found in your Apple Developer account under Membership Details"
+        },
+        {
+          "name": "__sv_displayName",
+          "description": "The name users will see on their device",
+          "default": null,
+          "placeholder": null,
+          "help": null
+        },
+        {
+          "name": "<ProjectOverview/>",
+          "description": "A brief overview of the project",
+          "default": null,
+          "placeholder": null,
+          "help": null
+        }
+      ]
+    }
+  ]
 }
