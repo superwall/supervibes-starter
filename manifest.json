@@ -55,8 +55,8 @@
           "variableName": "<ProjectOverview/>",
           "type": "textview",
           "description": "A brief overview of the project",
-          "default": null,
-          "placeholder": null,
+          "default": "",
+          "placeholder": "Describe what you want to build",
           "help": null,
           "required": false,
           "validation": {
