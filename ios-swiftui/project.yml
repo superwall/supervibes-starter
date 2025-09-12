@@ -90,5 +90,7 @@ targets:
       GENERATE_INFOPLIST_FILE: YES
       PRODUCT_BUNDLE_IDENTIFIER: com.supervibes.__sv_projectName.uitests
       TEST_TARGET_NAME: __sv_projectName
-      DEVELOPMENT_TEAM: __sv_developmentTeam
       CODE_SIGN_STYLE: Automatic
+      CODE_SIGN_IDENTITY: Apple Development
+      PROVISIONING_PROFILE_SPECIFIER: ""
+      DEVELOPMENT_TEAM: $(DEVELOPMENT_TEAM)
