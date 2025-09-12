@@ -38,6 +38,20 @@
           }
         },
         {
+          "name": "Development Team",
+          "variableName": "__sv_developmentTeam",
+          "type": "textfield",
+          "description": "Your Apple Developer Team ID",
+          "default": null,
+          "placeholder": null,
+          "help": "Found in your Apple Developer account under Membership Details",
+          "required": true,
+          "validation": {
+            "pattern": "^[A-Z0-9]{10}$",
+            "message": "Must be a 10-character Apple Developer Team ID (uppercase letters and numbers)"
+          }
+        },
+        {
           "name": "Project Overview",
           "variableName": "<ProjectOverview/>",
           "type": "textview",
