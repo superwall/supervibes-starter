@@ -1,6 +1,6 @@
 # Supervibes Starter Projects
 
-A collection of starter projects for Supervibes, an Interactive Video Experience (IVE) by Superwall.
+A collection of starter projects for Supervibes, an Integrated Vibecoding Environment (IVE) by Superwall.
 
 ## Overview
 
@@ -9,7 +9,8 @@ Supervibes provides immersive, interactive video experiences that engage users t
 ## Available Starters
 
 ### iOS SwiftUI
-A SwiftUI-based iOS application starter for integrating Supervibes experiences into native iOS apps.
+
+A SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.
 
 ## Getting Started
 

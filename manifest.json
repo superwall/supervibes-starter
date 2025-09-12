@@ -1,0 +1,23 @@
+{
+  "ios-swiftui": {
+    "name": "Supervibes iOS SwiftUI Starter",
+    "description": "A simple SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.",
+    "variables": [
+      {
+        "name": "__sv_projectName",
+        "description": "The internal name for your iOS project",
+        "help": null
+      },
+      {
+        "name": "__sv_developmentTeam",
+        "description": "Your Apple Developer Team ID",
+        "help": "Found in your Apple Developer account under Membership Details"
+      },
+      {
+        "name": "__sv_displayName",
+        "description": "The name users will see on their device",
+        "help": null
+      }
+    ]
+  }
+}
