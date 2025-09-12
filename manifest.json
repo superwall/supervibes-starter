@@ -7,6 +7,7 @@
       "tags": ["ios", "swiftui", "supervibes"],
       "description": "A simple SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.",
       "postCreateCommand": "/usr/local/bin/xcodegen generate",
+      "postCreatePrompt": "Build the app as specified in the Project Overview",
       "variables": [
         {
           "name": "Project Name",
