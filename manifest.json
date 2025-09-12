@@ -11,7 +11,7 @@
         {
           "name": "Project Name",
           "variableName": "__sv_projectName",
-          "type": "string",
+          "type": "textfield",
           "description": "The internal name for your iOS project",
           "default": "MyProject",
           "placeholder": "MyProject",
@@ -25,7 +25,7 @@
         {
           "name": "Display Name",
           "variableName": "__sv_displayName",
-          "type": "string",
+          "type": "textfield",
           "description": "The name users will see on their device",
           "default": null,
           "placeholder": null,
@@ -39,7 +39,7 @@
         {
           "name": "Development Team",
           "variableName": "__sv_developmentTeam",
-          "type": "string",
+          "type": "textfield",
           "description": "Your Apple Developer Team ID",
           "default": null,
           "placeholder": null,
@@ -53,7 +53,7 @@
         {
           "name": "Project Overview",
           "variableName": "<ProjectOverview/>",
-          "type": "string",
+          "type": "textview",
           "description": "A brief overview of the project",
           "default": null,
           "placeholder": null,
