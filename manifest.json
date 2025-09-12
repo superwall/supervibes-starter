@@ -1,6 +1,8 @@
 {
+  "type": "supervibes-starter-manifest",
   "ios-swiftui": {
     "name": "Supervibes iOS SwiftUI Starter",
+    "tags": ["ios", "swiftui", "supervibes"],
     "description": "A simple SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.",
     "variables": [
       {
