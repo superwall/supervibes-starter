@@ -9,6 +9,7 @@
       "variables": [
         {
           "name": "__sv_projectName",
+          "type": "string",
           "description": "The internal name for your iOS project",
           "default": "MyProject",
           "placeholder": "MyProject",
@@ -16,6 +17,7 @@
         },
         {
           "name": "__sv_developmentTeam",
+          "type": "string",
           "description": "Your Apple Developer Team ID",
           "default": null,
           "placeholder": null,
@@ -23,6 +25,7 @@
         },
         {
           "name": "__sv_displayName",
+          "type": "string",
           "description": "The name users will see on their device",
           "default": null,
           "placeholder": null,
@@ -30,6 +33,7 @@
         },
         {
           "name": "<ProjectOverview/>",
+          "type": "string",
           "description": "A brief overview of the project",
           "default": null,
           "placeholder": null,
