@@ -6,38 +6,63 @@
       "name": "iOS SwiftUI Starter",
       "tags": ["ios", "swiftui", "supervibes"],
       "description": "A simple SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.",
+      "postCreateCommand": "/usr/local/bin/xcodegen generate",
       "variables": [
         {
-          "name": "__sv_projectName",
+          "name": "Project Name",
+          "variableName": "__sv_projectName",
           "type": "string",
           "description": "The internal name for your iOS project",
           "default": "MyProject",
           "placeholder": "MyProject",
-          "help": null
+          "help": null,
+          "required": true,
+          "validation": {
+            "pattern": "^[a-zA-Z][a-zA-Z0-9]*$",
+            "message": "Must contain only letters and numbers, and cannot start with a number"
+          }
         },
         {
-          "name": "__sv_developmentTeam",
-          "type": "string",
-          "description": "Your Apple Developer Team ID",
-          "default": null,
-          "placeholder": null,
-          "help": "Found in your Apple Developer account under Membership Details"
-        },
-        {
-          "name": "__sv_displayName",
+          "name": "Display Name",
+          "variableName": "__sv_displayName",
           "type": "string",
           "description": "The name users will see on their device",
           "default": null,
           "placeholder": null,
-          "help": null
+          "help": null,
+          "required": true,
+          "validation": {
+            "pattern": "^[a-zA-Z0-9 ]+$",
+            "message": "Must contain only letters, numbers, and spaces"
+          }
         },
         {
-          "name": "<ProjectOverview/>",
+          "name": "Development Team",
+          "variableName": "__sv_developmentTeam",
+          "type": "string",
+          "description": "Your Apple Developer Team ID",
+          "default": null,
+          "placeholder": null,
+          "help": "Found in your Apple Developer account under Membership Details",
+          "required": true,
+          "validation": {
+            "pattern": "^[A-Z0-9]{10}$",
+            "message": "Must be a 10-character Apple Developer Team ID (uppercase letters and numbers)"
+          }
+        },
+        {
+          "name": "Project Overview",
+          "variableName": "<ProjectOverview/>",
           "type": "string",
           "description": "A brief overview of the project",
           "default": null,
           "placeholder": null,
-          "help": null
+          "help": null,
+          "required": false,
+          "validation": {
+            "maxLength": 2000,
+            "message": "Must be less than 2000 characters"
+          }
         }
       ]
     }
