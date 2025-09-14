@@ -1,0 +1,15 @@
+{
+  "originHash" : "ca64fee658e6ca0c5c98d12cf08e489be98b862a4f1a4972cf1a270bc24e4ea6",
+  "pins" : [
+    {
+      "identity" : "autolayout",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/componentskit/AutoLayout",
+      "state" : {
+        "revision" : "78e39facca2cc459a135655cae0e9feb5a587892",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}
