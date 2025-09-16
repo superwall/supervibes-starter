@@ -79,14 +79,15 @@ extension ButtonVM {
   var isInteractive: Bool {
     self.isEnabled && !self.isLoading
   }
-  var preferredLoadingVM: LoadingVM {
-    return self.loadingVM ?? .init {
-      $0.color = .init(
-        main: foregroundColor,
-        contrast: self.color?.main ?? .background
-      )
-      $0.size = .small
-    }
+  @MainActor var preferredLoadingVM: LoadingVM {
+    if let loadingVM { return loadingVM }
+    var vm = LoadingVM()
+    vm.color = .init(
+      main: foregroundColor,
+      contrast: self.color?.main ?? .universal(.hex("#FFFFFF"))
+    )
+    vm.size = .small
+    return vm
   }
   @MainActor var backgroundColor: UniversalColor? {
     switch self.style {
@@ -129,7 +130,7 @@ extension ButtonVM {
       }
     }
   }
-  var preferredFont: UniversalFont {
+  @MainActor var preferredFont: UniversalFont {
     if let font {
       return font
     }

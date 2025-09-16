@@ -1,11 +1,11 @@
 import SwiftUI
 
 /// A model that defines the appearance properties for a circular progress component.
-public struct CircularProgressVM: ComponentVM {
+@MainActor public struct CircularProgressVM: ComponentVM {
   /// The color of the circular progress.
   ///
   /// Defaults to `.accent`.
-  public var color: ComponentColor = .accent
+  public var color: ComponentColor = .init(main: .universal(.hex("#007AFF")), contrast: .universal(.hex("#FFFFFF")), background: .universal(.hex("#E1EEFE")))
 
   /// The current value of the circular progress.
   ///
@@ -45,12 +45,12 @@ public struct CircularProgressVM: ComponentVM {
   public var size: ComponentSize = .medium
 
   /// Initializes a new instance of `CircularProgressVM` with default values.
-  public init() {}
+  nonisolated public init() {}
 }
 
 // MARK: Shared Helpers
 
-extension CircularProgressVM {
+@MainActor extension CircularProgressVM {
   var animationDuration: TimeInterval {
     return 0.2
   }
@@ -92,7 +92,7 @@ extension CircularProgressVM {
       return 2.25 * .pi
     }
   }
-  var titleFont: UniversalFont {
+  @MainActor var titleFont: UniversalFont {
     if let font {
       return font
     }
@@ -106,7 +106,7 @@ extension CircularProgressVM {
     }
   }
 }
-
+@MainActor
 extension CircularProgressVM {
   var progress: CGFloat {
     let range = self.maxValue - self.minValue
@@ -124,7 +124,7 @@ extension CircularProgressVM {
 }
 
 // MARK: - UIKit Helpers
-
+@MainActor
 extension CircularProgressVM {
   func shouldInvalidateIntrinsicContentSize(_ oldModel: Self) -> Bool {
     return self.preferredSize != oldModel.preferredSize

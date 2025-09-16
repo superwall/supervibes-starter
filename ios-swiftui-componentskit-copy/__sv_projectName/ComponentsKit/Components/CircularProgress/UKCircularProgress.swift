@@ -192,9 +192,9 @@ open class UKCircularProgress: UIView, UKComponent {
 
 // MARK: - Style Helpers
 
-@MainActor extension UKCircularProgress {
+extension UKCircularProgress {
   fileprivate enum Style {
-    static func backgroundLayer(
+    @MainActor static func backgroundLayer(
       _ layer: CAShapeLayer,
       model: CircularProgressVM
     ) {
@@ -204,7 +204,7 @@ open class UKCircularProgress: UIView, UKComponent {
       layer.lineWidth = model.circularLineWidth
     }
 
-    static func progressLayer(
+    @MainActor static func progressLayer(
       _ layer: CAShapeLayer,
       model: CircularProgressVM
     ) {
@@ -214,7 +214,7 @@ open class UKCircularProgress: UIView, UKComponent {
       layer.lineWidth = model.circularLineWidth
     }
 
-    static func label(
+    @MainActor static func label(
       _ label: UILabel,
       model: CircularProgressVM
     ) {

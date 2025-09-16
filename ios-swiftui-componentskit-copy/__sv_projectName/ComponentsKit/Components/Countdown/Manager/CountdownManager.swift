@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 class CountdownManager: ObservableObject {
   // MARK: - Published Properties
 

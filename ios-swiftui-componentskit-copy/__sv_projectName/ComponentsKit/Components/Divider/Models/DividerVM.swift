@@ -24,7 +24,7 @@ public struct DividerVM: ComponentVM {
 // MARK: - Shared Helpers
 
 extension DividerVM {
-  var lineColor: UniversalColor {
+  @MainActor var lineColor: UniversalColor {
     return self.color?.background ?? .divider
   }
   var lineSize: CGFloat {

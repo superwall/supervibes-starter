@@ -92,12 +92,17 @@ public struct InputFieldVM: ComponentVM {
 
   /// Initializes a new instance of `InputFieldVM` with default values.
   public init() {}
+
+  /// The actual tint color to use, providing MainActor-isolated access to theme colors.
+  @MainActor public var actualTintColor: UniversalColor {
+    return tintColor == .clear ? .accent : tintColor
+  }
 }
 
 // MARK: - Shared Helpers
 
 extension InputFieldVM {
-  var preferredFont: UniversalFont {
+  @MainActor var preferredFont: UniversalFont {
     if let font {
       return font
     }
@@ -111,7 +116,7 @@ extension InputFieldVM {
       return .lgBody
     }
   }
-  var preferredTitleFont: UniversalFont {
+  @MainActor var preferredTitleFont: UniversalFont {
     if let titleFont {
       return titleFont
     }
@@ -125,7 +130,7 @@ extension InputFieldVM {
       return .lgBody
     }
   }
-  var preferredCaptionFont: UniversalFont {
+  @MainActor var preferredCaptionFont: UniversalFont {
     if let captionFont {
       return captionFont
     }
@@ -162,7 +167,7 @@ extension InputFieldVM {
       return 8
     }
   }
-  var backgroundColor: UniversalColor {
+  @MainActor var backgroundColor: UniversalColor {
     switch self.style {
     case .light, .faded:
       return self.color?.background ?? .content1
@@ -170,17 +175,17 @@ extension InputFieldVM {
       return .background
     }
   }
-  var foregroundColor: UniversalColor {
+  @MainActor var foregroundColor: UniversalColor {
     return (self.color?.main ?? .foreground).enabled(self.isEnabled)
   }
-  var placeholderColor: UniversalColor {
+  @MainActor var placeholderColor: UniversalColor {
     if let color {
       return color.main.withOpacity(self.isEnabled ? 0.7 : 0.3)
     } else {
       return .secondaryForeground.enabled(self.isEnabled)
     }
   }
-  var captionColor: UniversalColor {
+  @MainActor var captionColor: UniversalColor {
     return (self.color?.main ?? .secondaryForeground).enabled(self.isEnabled)
   }
   var borderWidth: CGFloat {
@@ -198,13 +203,13 @@ extension InputFieldVM {
       }
     }
   }
-  var borderColor: UniversalColor {
+  @MainActor var borderColor: UniversalColor {
     return (self.color?.main ?? .content3).enabled(self.isEnabled)
   }
 }
 
 // MARK: - UIKit Helpers
-
+@MainActor
 extension InputFieldVM {
   var autocorrectionType: UITextAutocorrectionType {
     return self.isAutocorrectionEnabled ? .yes : .no
@@ -262,7 +267,7 @@ extension InputFieldVM {
 }
 
 // MARK: - SwiftUI Helpers
-
+@MainActor
 extension InputFieldVM {
   var attributedTitle: AttributedString? {
     guard let nsAttributedTitle else {

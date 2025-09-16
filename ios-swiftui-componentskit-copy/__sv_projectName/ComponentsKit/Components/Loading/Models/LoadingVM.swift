@@ -4,7 +4,7 @@ import Foundation
 public struct LoadingVM: ComponentVM {
   /// The color of the loading indicator.
   ///
-  /// Defaults to `.accent`.
+  /// Defaults to custom blue color.
   public var color: ComponentColor
 
   /// The width of the lines used in the loading indicator.
@@ -23,7 +23,14 @@ public struct LoadingVM: ComponentVM {
   public var style: Style = .spinner
 
   /// Initializes a new instance of `LoadingVM` with default values.
-  public init() { self.color = .accent }
+  public init(color: ComponentColor? = nil) {
+    self.color = color ?? .init(
+      main: .universal(.hex("#007AFF")),
+      contrast: .universal(.hex("#FFFFFF")),
+      background: .universal(.hex("#E1EEFE"))
+    )
+  }
+
 }
 
 // MARK: Shared Helpers

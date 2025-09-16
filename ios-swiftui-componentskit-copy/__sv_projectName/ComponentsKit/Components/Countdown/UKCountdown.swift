@@ -1,5 +1,5 @@
 import AutoLayout
-import Combine
+@preconcurrency import Combine
 import UIKit
 
 /// A UIKit timer component that counts down from a specified duration to zero.

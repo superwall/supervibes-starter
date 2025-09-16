@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 
 /// A model that defines the appearance properties for a text input component.
+@MainActor
 public struct TextInputVM: ComponentVM {
   /// The autocapitalization behavior for the text input.
   ///
@@ -65,14 +66,14 @@ public struct TextInputVM: ComponentVM {
   /// The tint color applied to the text input's cursor.
   ///
   /// Defaults to `.accent`.
-  public var tintColor: UniversalColor = .accent
+  @MainActor public var tintColor: UniversalColor = .accent
 
   /// Initializes a new instance of `TextInputVM` with default values.
-  public init() {}
+  nonisolated public init() {}
 }
 
 // MARK: - Shared Helpers
-
+@MainActor
 extension TextInputVM {
   @MainActor var preferredFont: UniversalFont {
     if let font {
@@ -93,7 +94,7 @@ extension TextInputVM {
     return 12
   }
 
-  var backgroundColor: UniversalColor {
+  @MainActor var backgroundColor: UniversalColor {
     switch self.style {
     case .light, .faded:
       return self.color?.background ?? .content1

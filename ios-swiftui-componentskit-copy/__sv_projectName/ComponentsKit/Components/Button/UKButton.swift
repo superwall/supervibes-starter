@@ -2,6 +2,7 @@ import AutoLayout
 import UIKit
 
 /// A UIKit component that performs an action when it is tapped by a user.
+@MainActor
 open class UKButton: FullWidthComponent, UKComponent {
   // MARK: Properties
 
@@ -224,9 +225,9 @@ open class UKButton: FullWidthComponent, UKComponent {
 
 // MARK: - Style Helpers
 
-extension UKButton {
+@MainActor extension UKButton {
   fileprivate enum Style {
-    static func mainView(_ view: UIView, model: Model) {
+    @MainActor static func mainView(_ view: UIView, model: Model) {
       view.layer.borderWidth = model.borderWidth
       view.layer.borderColor = model.borderColor?.uiColor.cgColor
       view.backgroundColor = model.backgroundColor?.uiColor
@@ -234,14 +235,14 @@ extension UKButton {
         for: view.bounds.height
       )
     }
-    static func titleLabel(_ label: UILabel, model: Model) {
+    @MainActor static func titleLabel(_ label: UILabel, model: Model) {
       label.textAlignment = .center
       label.text = model.title
       label.font = model.preferredFont.uiFont
       label.textColor = model.foregroundColor.uiColor
       label.isHidden = model.title.isEmpty
     }
-    static func configureStackView(
+    @MainActor static func configureStackView(
       _ stackView: UIStackView,
       model: Model
     ) {
@@ -250,11 +251,11 @@ extension UKButton {
       stackView.alignment = .center
       stackView.spacing = model.contentSpacing
     }
-    static func loaderView(_ view: UKLoading, model: Model) {
+    @MainActor static func loaderView(_ view: UKLoading, model: Model) {
       view.model = model.preferredLoadingVM
       view.isVisible = model.isLoading
     }
-    static func imageView(_ imageView: UIImageView, model: Model) {
+    @MainActor static func imageView(_ imageView: UIImageView, model: Model) {
       imageView.image = model.image
       imageView.contentMode = .scaleAspectFit
       imageView.isHidden = model.isLoading || model.imageSrc.isNil

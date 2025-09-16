@@ -3,7 +3,7 @@ import UIKit
 /// A model that defines the appearance properties for an avatar group component.
 public struct AvatarGroupVM: ComponentVM {
   /// The border color of avatars.
-  public var borderColor: UniversalColor = .background
+  @MainActor public var borderColor: UniversalColor = .background
 
   /// The color of the placeholders.
   public var color: ComponentColor?
@@ -46,6 +46,7 @@ fileprivate struct IdentifiedAvatarItem: Equatable {
   var item: AvatarItemVM
 }
 
+@MainActor
 extension AvatarGroupVM {
   var identifiedAvatarVMs: [(UUID, AvatarVM)] {
     var avatars = self._identifiedItems.prefix(self.maxVisibleAvatars).map { data in
@@ -103,7 +104,7 @@ extension AvatarGroupVM {
 
 // MARK: - UIKit Helpers
 
-extension AvatarGroupVM {
+@MainActor extension AvatarGroupVM {
   var avatarHeight: CGFloat {
     return self.itemSize.height - self.padding * 2
   }

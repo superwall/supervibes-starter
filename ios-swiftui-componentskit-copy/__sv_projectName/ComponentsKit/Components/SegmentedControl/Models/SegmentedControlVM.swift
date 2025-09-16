@@ -51,10 +51,10 @@ public struct SegmentedControlVM<ID: Hashable>: ComponentVM {
 // MARK: - Shared Helpers
 
 extension SegmentedControlVM {
-  var backgroundColor: UniversalColor {
+  @MainActor var backgroundColor: UniversalColor {
     return .content1
   }
-  var selectedSegmentColor: UniversalColor {
+  @MainActor var selectedSegmentColor: UniversalColor {
     let color = self.color?.main ?? .themed(
       light: UniversalColor.background.light,
       dark: UniversalColor.content2.dark
@@ -64,7 +64,7 @@ extension SegmentedControlVM {
   func item(for id: ID) -> SegmentedControlItemVM<ID>? {
     return self.items.first(where: { $0.id == id })
   }
-  func foregroundColor(id: ID, selectedId: ID) -> UniversalColor {
+  @MainActor func foregroundColor(id: ID, selectedId: ID) -> UniversalColor {
     let isItemEnabled = self.item(for: id)?.isEnabled == true
     let isSelected = id == selectedId && isItemEnabled
 
@@ -96,7 +96,7 @@ extension SegmentedControlVM {
     case .large: 52
     }
   }
-  func selectedSegmentCornerRadius(for height: CGFloat = 10_000) -> CGFloat {
+  @MainActor func selectedSegmentCornerRadius(for height: CGFloat = 10_000) -> CGFloat {
     let componentRadius = self.cornerRadius.value(for: height)
     switch self.cornerRadius {
     case .none, .full, .custom:
@@ -105,7 +105,7 @@ extension SegmentedControlVM {
       return max(0, componentRadius - self.outerPaddings)
     }
   }
-  func preferredFont(for id: ID) -> UniversalFont {
+  @MainActor func preferredFont(for id: ID) -> UniversalFont {
     if let itemFont = self.item(for: id)?.font {
       return itemFont
     } else if let font {

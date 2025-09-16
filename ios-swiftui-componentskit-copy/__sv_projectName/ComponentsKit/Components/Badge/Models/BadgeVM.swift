@@ -16,7 +16,7 @@ public struct BadgeVM: ComponentVM {
   /// The font used for the badge's text.
   ///
   /// Defaults to `.smButton`.
-  public var font: UniversalFont = .smButton
+  @MainActor public var font: UniversalFont = .smButton
 
   /// A Boolean value indicating whether the button is enabled or disabled.
   ///
@@ -39,7 +39,7 @@ public struct BadgeVM: ComponentVM {
 
 extension BadgeVM {
   /// Returns the background color of the badge based on its style.
-  var backgroundColor: UniversalColor {
+  @MainActor var backgroundColor: UniversalColor {
     let color = switch self.style {
     case .filled:
       self.color?.main ?? .content2
@@ -50,7 +50,7 @@ extension BadgeVM {
   }
 
   /// Returns the foreground color of the badge based on its style.
-  var foregroundColor: UniversalColor {
+  @MainActor var foregroundColor: UniversalColor {
     let color = switch self.style {
     case .filled:
       self.color?.contrast ?? .foreground
@@ -64,7 +64,7 @@ extension BadgeVM {
 // MARK: UIKit Helpers
 
 extension BadgeVM {
-  func shouldUpdateLayout(_ oldModel: Self?) -> Bool {
+  @MainActor func shouldUpdateLayout(_ oldModel: Self?) -> Bool {
     return self.font != oldModel?.font
     || self.paddings != oldModel?.paddings
   }

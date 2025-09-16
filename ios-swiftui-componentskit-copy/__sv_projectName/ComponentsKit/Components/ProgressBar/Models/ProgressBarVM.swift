@@ -32,7 +32,13 @@ public struct ProgressBarVM: ComponentVM {
   public var style: Style = .striped
 
   /// Initializes a new instance of `ProgressBarVM` with default values.
-  public init() { self.color = .accent }
+  public init(color: ComponentColor? = nil) {
+    self.color = color ?? .init(
+      main: .universal(.hex("#007AFF")),
+      contrast: .universal(.hex("#FFFFFF")),
+      background: .universal(.hex("#E1EEFE"))
+    )
+  }
 }
 
 // MARK: - Shared Helpers
@@ -99,21 +105,23 @@ extension ProgressBarVM {
     return 4
   }
 
-  var backgroundColor: UniversalColor {
+  @MainActor var backgroundColor: UniversalColor {
+    let actualColor = self.color ?? .accent
     switch style {
     case .light:
-      return self.color.background
+      return actualColor.background
     case .filled, .striped:
-      return self.color.main
+      return actualColor.main
     }
   }
 
-  var barColor: UniversalColor {
+  @MainActor var barColor: UniversalColor {
+    let actualColor = self.color ?? .accent
     switch style {
     case .light:
-      return self.color.main
+      return actualColor.main
     case .filled, .striped:
-      return self.color.contrast
+      return actualColor.contrast
     }
   }
 

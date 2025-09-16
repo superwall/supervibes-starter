@@ -5,7 +5,7 @@ public struct SliderVM: ComponentVM {
   /// The color of the slider.
   ///
   /// Defaults to `.accent`.
-  public var color: ComponentColor
+  @MainActor public var color: ComponentColor = .accent
 
   /// The corner radius of the slider track and handle.
   ///
@@ -34,7 +34,7 @@ public struct SliderVM: ComponentVM {
   public var style: Style = .light
 
   /// Initializes a new instance of `SliderVM` with default values.
-  @MainActor public init() { self.color = .accent }
+  nonisolated public init() {}
 }
 
 // MARK: - Shared Helpers

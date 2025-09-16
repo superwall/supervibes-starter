@@ -182,9 +182,9 @@ public class RadioGroupItemView<ID: Hashable>: UIView {
 
 // MARK: - Style Helpers
 
-extension RadioGroupItemView {
+@MainActor extension RadioGroupItemView {
   fileprivate enum Style {
-    static func mainView(
+    @MainActor static func mainView(
       _ view: UIView,
       itemVM: RadioItemVM<ID>,
       groupVM: RadioGroupVM<ID>
@@ -192,7 +192,7 @@ extension RadioGroupItemView {
       view.isUserInteractionEnabled = groupVM.isItemEnabled(itemVM)
     }
 
-    static func radioView(
+    @MainActor static func radioView(
       _ view: UIView,
       itemVM: RadioItemVM<ID>,
       groupVM: RadioGroupVM<ID>,
@@ -204,7 +204,7 @@ extension RadioGroupItemView {
       view.backgroundColor = .clear
     }
 
-    static func innerCircle(
+    @MainActor static func innerCircle(
       _ view: UIView,
       itemVM: RadioItemVM<ID>,
       groupVM: RadioGroupVM<ID>,
@@ -216,7 +216,7 @@ extension RadioGroupItemView {
       view.transform = isSelected ? .identity : .init(scaleX: 0.1, y: 0.1)
     }
 
-    static func titleLabel(
+    @MainActor static func titleLabel(
       _ label: UILabel,
       itemVM: RadioItemVM<ID>,
       groupVM: RadioGroupVM<ID>

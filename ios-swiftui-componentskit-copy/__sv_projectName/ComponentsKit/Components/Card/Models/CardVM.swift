@@ -1,7 +1,7 @@
 import Foundation
 
 /// A model that defines the appearance properties for a card component.
-@MainActor public struct CardVM: ComponentVM {
+public struct CardVM: ComponentVM {
   /// The scaling factor for the card's tap animation, with a value between 0 and 1.
   ///
   /// Defaults to `.medium`.
@@ -39,5 +39,17 @@ import Foundation
   public var shadow: Shadow = .medium
 
   /// Initializes a new instance of `CardVM` with default values.
-  @MainActor public init() {}
+  public init() {}
+}
+
+extension CardVM {
+  /// The actual background color to use, providing MainActor-isolated access to theme colors.
+  @MainActor public var actualBackgroundColor: UniversalColor {
+    return backgroundColor == .clear ? .background : backgroundColor
+  }
+
+  /// The actual border color to use, providing MainActor-isolated access to theme colors.
+  @MainActor public var actualBorderColor: UniversalColor {
+    return borderColor == .clear ? .divider : borderColor
+  }
 }

@@ -112,7 +112,7 @@ open class UKAvatarGroup: UIView, UKComponent {
 
 extension UKAvatarGroup {
   fileprivate enum Style {
-    static func stackView(_ view: UIStackView, model: Model) {
+    @MainActor static func stackView(_ view: UIStackView, model: Model) {
       view.axis = .horizontal
       view.spacing = model.spacing
       view.distribution = .equalCentering

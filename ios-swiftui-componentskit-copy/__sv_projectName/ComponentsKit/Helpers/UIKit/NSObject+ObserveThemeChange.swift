@@ -57,6 +57,7 @@ extension NSObject {
   ///   This should contain logic to update theme-dependent views.
   /// - Returns: An `AnyCancellable` instance that can be used to stop observing the theme changes when needed.
   @discardableResult
+  @MainActor
   public func observeThemeChange(_ apply: @escaping () -> Void) -> AnyCancellable {
     let cancellable = NotificationCenter.default.publisher(
       for: Theme.didChangeThemeNotification

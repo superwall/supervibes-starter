@@ -218,10 +218,9 @@ open class UKInputField: FullWidthComponent, UKComponent {
 }
 
 // MARK: - Style Helpers
-@MainActor
 extension UKInputField {
   fileprivate enum Style {
-    static func textFieldContainer(
+    @MainActor static func textFieldContainer(
       _ view: UIView,
       model: Model
     ) {
@@ -230,14 +229,14 @@ extension UKInputField {
       view.layer.borderWidth = model.borderWidth
       view.layer.borderColor = model.borderColor.cgColor
     }
-    static func titleLabel(
+    @MainActor static func titleLabel(
       _ label: UILabel,
       model: Model
     ) {
       label.attributedText = model.nsAttributedTitle
       label.isVisible = model.title.isNotNilAndEmpty
     }
-    static func textField(
+    @MainActor static func textField(
       _ textField: UITextField,
       model: Model
     ) {
@@ -252,7 +251,7 @@ extension UKInputField {
       textField.autocorrectionType = model.autocorrectionType
       textField.autocapitalizationType = model.autocapitalization.textAutocapitalizationType
     }
-    static func captionLabel(
+    @MainActor static func captionLabel(
       _ label: UILabel,
       model: Model
     ) {
@@ -262,14 +261,14 @@ extension UKInputField {
       label.font = model.preferredCaptionFont.uiFont
       label.numberOfLines = 0
     }
-    static func horizontalStackView(
+    @MainActor static func horizontalStackView(
       _ stackView: UIStackView,
       model: Model
     ) {
       stackView.axis = .horizontal
       stackView.spacing = model.spacing
     }
-    static func verticalStackView(
+    @MainActor static func verticalStackView(
       _ stackView: UIStackView,
       model: Model
     ) {

@@ -55,7 +55,7 @@ public struct CountdownVM: ComponentVM {
 // MARK: - Shared Helpers
 
 extension CountdownVM {
-  var preferredMainFont: UniversalFont {
+  @MainActor var preferredMainFont: UniversalFont {
     if let mainFont {
       return mainFont
     }
@@ -69,7 +69,7 @@ extension CountdownVM {
       return .lgHeadline
     }
   }
-  private var preferredSecondaryFont: UniversalFont {
+  @MainActor private var preferredSecondaryFont: UniversalFont {
     if let secondaryFont {
       return secondaryFont
     }
@@ -83,13 +83,13 @@ extension CountdownVM {
       return .lgCaption
     }
   }
-  var backgroundColor: UniversalColor {
+  @MainActor var backgroundColor: UniversalColor {
     return self.color?.background ?? .content1
   }
-  var foregroundColor: UniversalColor {
+  @MainActor var foregroundColor: UniversalColor {
     return self.color?.main ?? .foreground
   }
-  var colonColor: UniversalColor {
+  @MainActor var colonColor: UniversalColor {
     return self.color?.main ?? .secondaryForeground
   }
   var defaultMinWidth: CGFloat {
@@ -163,7 +163,7 @@ extension CountdownVM {
     }
   }
 
-  func timeText(
+  @MainActor func timeText(
     value: Int,
     unit: CountdownHelpers.Unit
   ) -> NSAttributedString {
@@ -212,7 +212,7 @@ extension CountdownVM {
     || self.locale != oldModel.locale
   }
 
-  func timeWidth(manager: CountdownManager) -> CGFloat {
+  @MainActor func timeWidth(manager: CountdownManager) -> CGFloat {
     let values: [(Int, CountdownHelpers.Unit)] = [
       (manager.days, .days),
       (manager.hours, .hours),

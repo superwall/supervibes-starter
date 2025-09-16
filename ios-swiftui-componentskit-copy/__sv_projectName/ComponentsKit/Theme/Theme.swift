@@ -2,6 +2,7 @@ import Foundation
 
 /// A predefined set of colors and layout attributes that ensure visual consistency across the
 /// application.
+@MainActor
 public struct Theme: Initializable, Updatable, Equatable {
   // MARK: - Properties
 
@@ -14,11 +15,12 @@ public struct Theme: Initializable, Updatable, Equatable {
   // MARK: - Initialization
 
   /// Initializes a new `Theme` instance with default values.
-  public init() {}
+  nonisolated public init() {}
 }
 
 // MARK: - Theme + Current
 
+@MainActor
 extension Theme {
   /// A notification that is triggered when a theme changes.
   public static let didChangeThemeNotification = Notification.Name("didChangeThemeNotification")

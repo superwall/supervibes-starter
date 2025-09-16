@@ -158,9 +158,9 @@ public class UKAlertController: UKCenterModalController {
 
 // MARK: - Style Helpers
 
-@MainActor extension UKAlertController {
+extension UKAlertController {
   fileprivate enum Style {
-    static func titleLabel(_ label: UILabel, text: String?) {
+    @MainActor static func titleLabel(_ label: UILabel, text: String?) {
       label.text = text
       label.font = UniversalFont.mdHeadline.uiFont
       label.textColor = UniversalColor.foreground.uiColor
@@ -168,7 +168,7 @@ public class UKAlertController: UKCenterModalController {
       label.numberOfLines = 0
     }
 
-    static func subtitleLabel(_ label: UILabel, text: String?) {
+    @MainActor static func subtitleLabel(_ label: UILabel, text: String?) {
       label.text = text
       label.font = UniversalFont.mdBody.uiFont
       label.textColor = UniversalColor.secondaryForeground.uiColor
@@ -176,7 +176,7 @@ public class UKAlertController: UKCenterModalController {
       label.numberOfLines = 0
     }
 
-    static func buttonsStackView(_ stackView: UIStackView) {
+    @MainActor static func buttonsStackView(_ stackView: UIStackView) {
       stackView.spacing = AlertVM.buttonsSpacing
     }
   }

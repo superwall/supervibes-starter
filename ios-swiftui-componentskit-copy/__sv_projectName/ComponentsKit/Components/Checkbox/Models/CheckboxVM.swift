@@ -1,6 +1,7 @@
 import SwiftUI
 
 /// A model that defines the appearance properties for a checkbox component.
+@MainActor
 public struct CheckboxVM: ComponentVM {
   /// The label text displayed next to the checkbox.
   public var title: String?
@@ -8,7 +9,7 @@ public struct CheckboxVM: ComponentVM {
   /// The color of the checkbox.
   ///
   /// Defaults to `.accent`.
-  public var color: ComponentColor
+  @MainActor public var color: ComponentColor = .accent
 
   /// The corner radius of the checkbox.
   ///
@@ -31,7 +32,7 @@ public struct CheckboxVM: ComponentVM {
   public var size: ComponentSize = .medium
 
   /// Initializes a new instance of `CheckboxVM` with default values.
-  public init() { self.color = .accent }
+  nonisolated public init() {}
 }
 
 // MARK: Shared Helpers
@@ -46,7 +47,7 @@ extension CheckboxVM {
   @MainActor var titleColor: UniversalColor {
     return .foreground.enabled(self.isEnabled)
   }
-  var borderColor: UniversalColor {
+  @MainActor var borderColor: UniversalColor {
     return .divider
   }
   var borderWidth: CGFloat {

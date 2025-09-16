@@ -212,20 +212,20 @@ open class UKProgressBar: FullWidthComponent, UKComponent {
 
 // MARK: - Style Helpers
 
-@MainActor extension UKProgressBar {
+extension UKProgressBar {
   fileprivate enum Style {
-    static func backgroundView(_ view: UIView, model: ProgressBarVM) {
+    @MainActor static func backgroundView(_ view: UIView, model: ProgressBarVM) {
       view.backgroundColor = model.backgroundColor.uiColor
       view.layer.cornerRadius = model.cornerRadius(for: view.bounds.height)
     }
 
-    static func progressView(_ view: UIView, model: ProgressBarVM) {
+    @MainActor static func progressView(_ view: UIView, model: ProgressBarVM) {
       view.backgroundColor = model.barColor.uiColor
       view.layer.cornerRadius = model.cornerRadius(for: view.bounds.height)
       view.layer.masksToBounds = true
     }
 
-    static func stripedLayer(_ layer: CAShapeLayer, model: ProgressBarVM) {
+    @MainActor static func stripedLayer(_ layer: CAShapeLayer, model: ProgressBarVM) {
       layer.fillColor = model.color.main.uiColor.cgColor
       switch model.style {
       case .light, .filled:

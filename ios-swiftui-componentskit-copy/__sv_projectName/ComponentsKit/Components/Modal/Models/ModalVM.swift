@@ -36,7 +36,7 @@ public protocol ModalVM: ComponentVM {
 // MARK: - Helpers
 
 extension ModalVM {
-  var preferredBackgroundColor: UniversalColor {
+  @MainActor var preferredBackgroundColor: UniversalColor {
     return self.backgroundColor ?? .themed(
       light: UniversalColor.background.light,
       dark: UniversalColor.secondaryBackground.dark

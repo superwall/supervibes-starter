@@ -1,8 +1,8 @@
 import Foundation
 
-extension Theme {
+@MainActor extension Theme {
   /// Defines a set of colors that are used for styling components and interfaces.
-  public struct Palette: Initializable, Updatable, Equatable {
+  @MainActor public struct Palette: Initializable, Updatable, Equatable {
     /// The color for the main background of the interface.
     public var background: UniversalColor = .themed(
       light: .hex("#FFFFFF"),
@@ -113,7 +113,7 @@ extension Theme {
     )
 
     /// Initializes a new instance of `Palette` with default values.
-    public init() {}
+    nonisolated public init() {}
   }
 }
 

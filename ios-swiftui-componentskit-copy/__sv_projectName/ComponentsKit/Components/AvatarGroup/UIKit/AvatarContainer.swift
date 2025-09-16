@@ -82,7 +82,7 @@ final class AvatarContainer: UIView {
 
 extension AvatarContainer {
   fileprivate enum Style {
-    static func mainView(_ view: UIView, model: AvatarGroupVM) {
+    @MainActor static func mainView(_ view: UIView, model: AvatarGroupVM) {
       view.backgroundColor = model.borderColor.uiColor
       view.layer.cornerRadius = model.cornerRadius.value(for: view.bounds.height)
     }

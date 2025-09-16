@@ -9,7 +9,7 @@ public struct RadioGroupVM<ID: Hashable>: ComponentVM {
   public var animationScale: AnimationScale = .medium
 
   /// The color of the selected radio button.
-  public var color: UniversalColor = .accent
+  @MainActor public var color: UniversalColor = .accent
 
   /// The font used for the radio items' titles.
   public var font: UniversalFont?
@@ -84,7 +84,7 @@ extension RadioGroupVM {
     }
   }
 
-  func preferredFont(for id: ID) -> UniversalFont {
+  @MainActor func preferredFont(for id: ID) -> UniversalFont {
     if let itemFont = self.item(for: id)?.font {
       return itemFont
     } else if let font = self.font {
@@ -113,7 +113,7 @@ extension RadioGroupVM {
     return item.isEnabled && self.isEnabled
   }
 
-  func radioItemColor(for item: RadioItemVM<ID>, isSelected: Bool) -> UniversalColor {
+  @MainActor func radioItemColor(for item: RadioItemVM<ID>, isSelected: Bool) -> UniversalColor {
     if isSelected {
       return self.color.enabled(self.isItemEnabled(item))
     } else {
@@ -121,7 +121,7 @@ extension RadioGroupVM {
     }
   }
 
-  func textColor(for item: RadioItemVM<ID>) -> UniversalColor {
+  @MainActor func textColor(for item: RadioItemVM<ID>) -> UniversalColor {
     return .foreground.enabled(self.isItemEnabled(item))
   }
 }

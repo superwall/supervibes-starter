@@ -1,7 +1,7 @@
 import UIKit
 
 /// A model that defines the appearance properties for an avatar component.
-public struct AvatarVM: ComponentVM, Hashable {
+@MainActor public struct AvatarVM: ComponentVM, Hashable {
   /// The color of the placeholder.
   public var color: ComponentColor?
 
@@ -22,11 +22,11 @@ public struct AvatarVM: ComponentVM, Hashable {
   public var size: ComponentSize = .medium
 
   /// Initializes a new instance of `AvatarVM` with default values.
-  public init() {}
+  nonisolated public init() {}
 }
 
 // MARK: - Helpers
-
+@MainActor
 extension AvatarVM {
   var preferredSize: CGSize {
     switch self.size {
@@ -49,6 +49,7 @@ extension AvatarVM {
   }
 }
 
+@MainActor
 extension AvatarVM {
   func placeholderImage(for size: CGSize) -> UIImage {
     switch self.placeholder {
@@ -64,13 +65,15 @@ extension AvatarVM {
   }
 
   private var placeholderFont: UIFont {
-    switch self.size {
-    case .small:
-      return UniversalFont.smButton.uiFont
-    case .medium:
-      return UniversalFont.mdButton.uiFont
-    case .large:
-      return UniversalFont.lgButton.uiFont
+    @MainActor get {
+      switch self.size {
+      case .small:
+        return UniversalFont.smButton.uiFont
+      case .medium:
+        return UniversalFont.mdButton.uiFont
+      case .large:
+        return UniversalFont.lgButton.uiFont
+      }
     }
   }
 
