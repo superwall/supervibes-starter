@@ -1,11 +1,26 @@
 import SwiftUI
 
+/// Color conveniences (e.g., hex init, semantic aliases to Theme/assets).
+///
+/// ## Purpose
+/// Color conveniences (e.g., hex init, semantic aliases to Theme/assets).
+///
+/// ## Include
+/// - Safe initializers
+/// - Mapping to asset colors
+///
+/// ## Don't Include
+/// - Random ad-hoc constants; prefer Theme/Assets
+///
+/// ## Lifecycle & Usage
+/// Reference semantic names consistently.
+
 // MARK: - Color Extensions
-// TEMPLATE NOTE: Add color utilities and hex init here
+// TODO:  Add color utilities and hex init here
 
 extension Color {
   /// Initialize a Color from a hex string
-  /// TEMPLATE NOTE: Use sparingly - prefer theme colors from Assets or Theme.swift
+  // TODO: Use sparingly - prefer theme colors from Assets or Theme.swift
   /// - Parameter hex: Hex string (e.g., "#FF5733" or "FF5733")
   init(hex: String) {
     let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)

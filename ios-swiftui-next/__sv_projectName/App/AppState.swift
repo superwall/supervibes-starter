@@ -1,7 +1,25 @@
 import SwiftUI
 
-/// Ephemeral app-level state (non-persisted)
-/// TEMPLATE NOTE: Use this for session flags and resolved config snapshots
+/// Ephemeral app-level state (non-persisted) for cross-feature flags and resolved config.
+///
+/// ## Purpose
+/// Ephemeral, cross-feature flags and resolved config (non-persisted).
+///
+/// ## Include
+/// - Session flags (e.g., isBusy)
+/// - Resolved env snapshot (active environment)
+/// - Lightweight permission/capability snapshots
+///
+/// ## Don't Include
+/// - User data/settings
+/// - Navigation paths
+/// - Feature state
+/// - Analytics counters
+///
+/// ## Lifecycle & Usage
+/// Instantiated once and injected via .environment(...). Read by views; it doesn't own long-lived data.
+///
+// TODO: Use this for session flags and resolved config snapshots
 /// DO NOT put user data, navigation paths, or feature state here
 @Observable
 final class AppState {
@@ -21,7 +39,7 @@ final class AppState {
   // MARK: - Initialization
 
   init() {
-    // TEMPLATE NOTE: Add any app-level initialization here
+    // TODO:  Add any app-level initialization here
     if AppConfig.debugLoggingEnabled {
       print("[AppState] Initialized")
     }

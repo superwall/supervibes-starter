@@ -1,7 +1,24 @@
 import SwiftUI
 
-/// Centralized navigation router
-/// TEMPLATE NOTE: Extend Route enum with your app's routes
+/// Centralized navigation router for managing app-wide navigation.
+///
+/// ## Purpose
+/// Centralizes navigation (route enum + NavigationStack path helpers).
+///
+/// ## Include
+/// - Route definitions
+/// - Push/pop helpers
+/// - Deep-link entry points
+///
+/// ## Don't Include
+/// - Data access
+/// - User settings
+/// - Network calls
+///
+/// ## Lifecycle & Usage
+/// Singleton-ish instance injected in environment; views call it to navigate.
+///
+// TODO: Extend Route enum with your app's routes
 /// This provides a single place to manage all navigation
 @Observable
 final class Router {
@@ -28,7 +45,7 @@ final class Router {
   }
 
   /// Handle deep link
-  /// TEMPLATE NOTE: Implement deep link parsing for your routes
+  // TODO: Implement deep link parsing for your routes
   func handleDeepLink(_ url: URL) {
     // Example: myapp://feature/detail/123
     // guard url.scheme == "myapp" else { return }
@@ -42,7 +59,7 @@ final class Router {
 // MARK: - Routes
 
 /// App navigation routes
-/// TEMPLATE NOTE: Add your app-specific routes here
+// TODO: Add your app-specific routes here
 enum Route: Hashable {
   case main
   case settings

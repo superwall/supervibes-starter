@@ -1,7 +1,21 @@
 import SwiftUI
 
-/// Empty state view for lists and collections
-/// TEMPLATE NOTE: Use this when there's no content to display
+/// Empty state view for lists and collections.
+///
+/// ## Purpose
+/// Standard empty state (icon + message + optional action).
+///
+/// ## Include
+/// - Layout and an optional callback
+///
+/// ## Don't Include
+/// - Data mutations
+/// - Networking
+///
+/// ## Lifecycle & Usage
+/// Used when lists/feeds have no content.
+///
+// TODO: Use this when there's no content to display
 struct EmptyStateView: View {
   let icon: String
   let title: String

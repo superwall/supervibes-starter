@@ -1,7 +1,22 @@
 import SwiftUI
 
+/// Generic View helpers used broadly.
+///
+/// ## Purpose
+/// Generic View helpers used broadly.
+///
+/// ## Include
+/// - Small, pure modifiers and wrappers
+///
+/// ## Don't Include
+/// - Feature logic
+/// - Side-effects
+///
+/// ## Lifecycle & Usage
+/// Keep minimal and well-named to avoid collisions.
+
 // MARK: - View Extensions
-// TEMPLATE NOTE: Add generic, reusable view modifiers here
+// TODO:  Add generic, reusable view modifiers here
 
 extension View {
   /// Apply standard card styling

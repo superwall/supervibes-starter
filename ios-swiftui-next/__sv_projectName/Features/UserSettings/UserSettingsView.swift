@@ -1,24 +1,44 @@
 import SwiftUI
 
-/// User settings and preferences view
-/// TEMPLATE NOTE: Customize with your app's settings
+/// User settings and preferences view.
+///
+/// ## Purpose
+/// Edit preferences backed directly by the User model; reflect theme/preferences.
+///
+/// ## Include
+/// - Bindings to User fields
+/// - Small validation
+/// - Optional analytics event on change
+///
+/// ## Don't Include
+/// - Non-user settings
+/// - Orchestration for other features
+///
+/// ## Lifecycle & Usage
+/// Reads/writes SwiftData through bindings; emits analytics as needed.
+///
+// TODO: Customize with your app's settings
 struct UserSettingsView: View {
   @Bindable var user: User
   @Environment(\.modelContext) private var modelContext
   @Environment(Router.self) private var router
 
+  @State private var showingResetConfirmation = false
+
   var body: some View {
     Form {
       // Profile Section
       Section("Profile") {
-        HStack {
-          Text("Display Name")
-          Spacer()
-          Text(user.displayName ?? "Not set")
-            .foregroundStyle(Theme.Colors.secondaryText)
+        // Dynamic profile fields from ProfileFieldRegistry
+        ForEach(ProfileFieldRegistry.settingsFields, id: \.key) { field in
+          profileFieldEditor(for: field)
         }
 
+        // Static fields
         HStack {
+          Image(systemName: "person.text.rectangle.fill")
+            .foregroundStyle(Theme.Colors.primary)
+            .frame(width: 24)
           Text("Member Since")
           Spacer()
           Text(user.firstLaunchDate, style: .date)
@@ -41,16 +61,9 @@ struct UserSettingsView: View {
       // Statistics Section
       Section("Statistics") {
         HStack {
-          Text("Days Since First Launch")
-          Spacer()
-          Text("\(user.daysSinceFirstLaunch)")
-            .foregroundStyle(Theme.Colors.secondaryText)
-        }
-
-        HStack {
           Text("Core Feature Uses")
           Spacer()
-          Text("\(user.totalCoreFeatureUses)")
+          Text("\(user.totalUsage)")
             .foregroundStyle(Theme.Colors.secondaryText)
         }
 
@@ -58,6 +71,13 @@ struct UserSettingsView: View {
           Text("Last Activity")
           Spacer()
           Text(user.lastActivityDate, style: .relative)
+            .foregroundStyle(Theme.Colors.secondaryText)
+        }
+        
+        HStack {
+          Text("Days Since Install")
+          Spacer()
+          Text("\(user.daysSinceFirstLaunch)")
             .foregroundStyle(Theme.Colors.secondaryText)
         }
       }
@@ -82,7 +102,7 @@ struct UserSettingsView: View {
       // Reset Section
       Section {
         Button("Reset App") {
-          resetApp()
+          showingResetConfirmation = true
         }
         .foregroundStyle(Theme.Colors.error)
       } footer: {
@@ -90,10 +110,89 @@ struct UserSettingsView: View {
           .font(Theme.Typography.caption)
       }
     }
+    .scrollDismissesKeyboard(.immediately)
     .navigationTitle("Settings")
     .navigationBarTitleDisplayMode(.inline)
     .task {
       Analytics.track(event: .settingsViewed)
+    }
+    .alert("Reset App?", isPresented: $showingResetConfirmation) {
+      Button("Cancel", role: .cancel) { }
+      Button("Reset", role: .destructive) {
+        resetApp()
+      }
+    } message: {
+      Text("This will clear all your data and return you to onboarding. This action cannot be undone.")
+    }
+  }
+
+  // MARK: - Profile Field Editors
+
+  @ViewBuilder
+  private func profileFieldEditor(for field: any ProfileField) -> some View {
+    switch field.inputType {
+    case .textField:
+      HStack {
+        Image(systemName: field.icon)
+          .foregroundStyle(Theme.Colors.primary)
+          .frame(width: 24)
+        ProfileTextFieldEditor(
+          field: field,
+          value: bindingForTextField(key: field.key)
+        )
+      }
+
+    case .singleSelection:
+      HStack {
+        Image(systemName: field.icon)
+          .foregroundStyle(Theme.Colors.primary)
+          .frame(width: 24)
+        ProfileSingleSelectionEditor(
+          field: field,
+          value: bindingForSingleSelection(key: field.key)
+        )
+      }
+
+    case .multiSelection:
+      HStack {
+        Image(systemName: field.icon)
+          .foregroundStyle(Theme.Colors.primary)
+          .frame(width: 24)
+        ProfileMultiSelectionEditor(
+          field: field,
+          values: bindingForMultiSelection(key: field.key)
+        )
+      }
+    }
+  }
+
+  private func bindingForTextField(key: String) -> Binding<String> {
+    switch key {
+    case "name":
+      return Binding(
+        get: { user.displayName ?? "" },
+        set: { user.displayName = $0.isEmpty ? nil : $0 }
+      )
+    default:
+      return .constant("")
+    }
+  }
+
+  private func bindingForSingleSelection(key: String) -> Binding<String?> {
+    switch key {
+    case "ageGroup":
+      return $user.ageGroup
+    default:
+      return .constant(nil)
+    }
+  }
+
+  private func bindingForMultiSelection(key: String) -> Binding<[String]> {
+    switch key {
+    case "interests":
+      return $user.interests
+    default:
+      return .constant([])
     }
   }
 
@@ -104,6 +203,9 @@ struct UserSettingsView: View {
 
     // Save context
     try? modelContext.save()
+
+    // Sync to analytics
+    user.syncToAnalytics()
 
     // Track analytics
     Analytics.track(
@@ -117,14 +219,13 @@ struct UserSettingsView: View {
     Analytics.track(event: .appReset)
 
     // Reset user data
-    user.hasCompletedOnboarding = false
-    user.displayName = nil
-    user.preferredTheme = "system"
-    user.totalCoreFeatureUses = 0
-    user.lastActivityDate = Date()
+    user.reset()
 
     // Save changes
     try? modelContext.save()
+
+    // Sync to analytics (clears properties)
+    user.syncToAnalytics()
 
     // Reset analytics
     Analytics.reset()
@@ -139,7 +240,7 @@ struct UserSettingsView: View {
     UserSettingsView(user: User(
       hasCompletedOnboarding: true,
       displayName: "John Doe",
-      totalCoreFeatureUses: 42
+      totalUsage: 42
     ))
   }
   .modelContainer(for: User.self, inMemory: true)

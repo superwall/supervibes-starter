@@ -1,8 +1,25 @@
 import SwiftUI
 import Pow
 
-/// Main app view - primary feature surface
-/// TEMPLATE NOTE: Replace this with your app's main functionality. This is just an example.
+/// Main app view - primary feature surface.
+///
+/// ## Purpose
+/// Primary app surface; composes core feature entry points.
+///
+/// ## Include
+/// - Lightweight composition
+/// - Triggers to services
+/// - Read-only views into User
+///
+/// ## Don't Include
+/// - Data layers
+/// - Deep networking
+/// - Global configuration
+///
+/// ## Lifecycle & Usage
+/// Lives most of the session; navigates via Router.
+///
+// TODO: Replace this with your app's main functionality. This is just an example.
 struct MainView: View {
   @Bindable var user: User
   @Environment(Router.self) private var router
@@ -12,7 +29,7 @@ struct MainView: View {
 
   var body: some View {
     ScrollView {
-      VStack(spacing: 32) {
+      VStack(alignment: .leading, spacing: 32) {
         // Header
         VStack(alignment: .leading, spacing: 12) {
           if let displayName = user.displayName {
@@ -22,19 +39,24 @@ struct MainView: View {
             Text("Welcome!")
               .font(Theme.Typography.title1)
           }
+          
+          Text("This is your main app view.")
+          .font(Theme.Typography.callout)
+          .foregroundStyle(Theme.Colors.secondaryText)
 
-          Text("This is your main app view")
-            .font(Theme.Typography.callout)
-            .foregroundStyle(Theme.Colors.secondaryText)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 32)
         .padding(.top, 32)
+        
+     
 
         // Stats Card
         VStack(alignment: .leading, spacing: 16) {
-          Text("Your Activity")
-            .font(Theme.Typography.title3)
+           
+        Text("Your Activity")
+          .font(Theme.Typography.bodyBold)
+          .foregroundStyle(Theme.Colors.secondaryText)
 
           HStack(spacing: 24) {
             StatItem(
@@ -47,17 +69,17 @@ struct MainView: View {
 
             StatItem(
               title: "Total Uses",
-              value: "\(user.totalCoreFeatureUses)"
+              value: "\(user.totalUsage)"
             )
           }
         }
-        .padding(24)
+        .padding(16)
         .cardStyle()
         .padding(.horizontal, 32)
 
         // Action Button
-        PrimaryButton(title: "Use Core Feature") {
-          useCoreFeature()
+        PrimaryButton(title: "Log Usage") {
+          logUsage()
         }
         .padding(.horizontal, 32)
 
@@ -71,7 +93,7 @@ struct MainView: View {
         Button {
           router.navigate(to: .settings)
         } label: {
-          Image(systemName: "gearshape")
+          Image(systemName: "gearshape.fill")
         }
       }
     }
@@ -79,16 +101,18 @@ struct MainView: View {
 
   // MARK: - Actions
 
-  private func useCoreFeature() {
+  private func logUsage() {
     // Increment usage counter
-    user.incrementCoreFeatureUse()
+    user.logUsage()
 
     // Save context
     try? modelContext.save()
 
+    // Sync to analytics
+    user.syncToAnalytics()
+
     // Track analytics
     Analytics.track(event: .coreFeatureUsed)
-    Analytics.increment(property: "total_feature_uses")
   }
 }
 
@@ -101,7 +125,7 @@ private struct StatItem: View {
   var body: some View {
     VStack(spacing: 8) {
       Text(value)
-        .font(Theme.Typography.title2)
+        .font(Theme.Typography.title1)
         .foregroundStyle(Theme.Colors.primary)
         .contentTransition(.numericText())
         .changeEffect(

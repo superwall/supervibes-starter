@@ -1,8 +1,23 @@
 import SwiftUI
 import Pow
 
+/// Reusable button styles to enforce consistency.
+///
+/// ## Purpose
+/// Reusable button styles to enforce consistency.
+///
+/// ## Include
+/// - Style structs/enums and shared visual rules
+///
+/// ## Don't Include
+/// - Actions
+/// - Analytics
+///
+/// ## Lifecycle & Usage
+/// Apply via modifiers.
+
 // MARK: - Button Styles
-// TEMPLATE NOTE: Define reusable button styles for consistent appearance
+// TODO:  Define reusable button styles for consistent appearance
 
 /// Primary button style (filled CTA)
 struct PrimaryButtonStyle: ButtonStyle {

@@ -1,7 +1,24 @@
 import SwiftUI
 
-/// Design system tokens and styling constants
-/// TEMPLATE NOTE: Customize these values to match your brand and design system
+/// Design system tokens and styling constants.
+///
+/// ## Purpose
+/// Design tokens (colors, fonts). Single source of truth for styling constants.
+///
+/// ## Include
+/// - Semantic color tokens
+/// - Typography presets
+/// - Reusable design values
+///
+/// ## Don't Include
+/// - View-specific layout logic
+/// - Business rules
+/// - UIKit appearance customizations
+///
+/// ## Lifecycle & Usage
+/// Imported wherever UI is built; avoid hard-coding values in features.
+///
+// TODO: Customize these values to match your brand and design system
 /// This is the single source of truth for all visual styling in the app
 enum Theme {
   // MARK: - Colors

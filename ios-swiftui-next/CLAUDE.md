@@ -12,18 +12,15 @@
 ```
 MyApp/
 ├── App/
-│   ├── MyAppApp.swift
+│   ├── __sv_projectNameApp.swift
 │   ├── AppState.swift
 │   ├── Router.swift
 │   ├── RootView.swift
 │   └── Environment/
 │       └── ServiceEnvironment.swift
 │
-├── Data/
-│   ├── Models/
-│   │   └── User.swift
-│   └── Helpers/
-│       └── User+Helpers.swift
+├── Models/
+│   └── User.swift
 │
 ├── Services/
 │   ├── NetworkClient.swift
@@ -34,7 +31,14 @@ MyApp/
 │
 ├── Features/
 │   ├── Onboarding/
-│   │   └── OnboardingView.swift
+│   │   ├── OnboardingView.swift
+│   │   ├── OnboardingStep.swift
+│   │   ├── OnboardingProgressBar.swift
+│   │   ├── SelectableCard.swift
+│   │   ├── WelcomeStepView.swift
+│   │   ├── NameStepView.swift
+│   │   ├── AgeGroupStepView.swift
+│   │   └── InterestsStepView.swift
 │   ├── Main/
 │   │   └── MainView.swift
 │   └── UserSettings/
@@ -43,10 +47,14 @@ MyApp/
 ├── Shared/
 │   ├── Theme.swift
 │   ├── Appearance.swift
+│   ├── Models/
+│   │   ├── ProfileField.swift
+│   │   └── ProfileFieldRegistry.swift
 │   ├── Components/
 │   │   ├── PrimaryButton.swift
 │   │   ├── LoadingView.swift
-│   │   └── EmptyStateView.swift
+│   │   ├── EmptyStateView.swift
+│   │   └── ProfileFieldEditors.swift
 │   ├── Extensions/
 │   │   ├── View+Ext.swift
 │   │   ├── Color+Ext.swift
@@ -64,291 +72,199 @@ MyApp/
     └── Info.plist
 ```
 
+## Golden Rule (Very Important)
+
+Always add DocC documentation at the begining of the file, documenting
+- a quick one-liner
+- its purpose
+- what logic to include in the file
+- what not to include in the file (out of scope)
+- lifecycle & usage notes
+
+As such, when reading a file, remember to _always_ follow the guidelines.
+
+Remember: it's your responsibility to maintain the app's architecture; if you feel the need to update a files guidelines, do so.
+
+```swift
+/// Centralized navigation router for managing app-wide navigation.
+///
+/// ## Purpose
+/// Centralizes navigation (route enum + NavigationStack path helpers).
+///
+/// ## Include
+/// - Route definitions
+/// - Push/pop helpers
+/// - Deep-link entry points
+///
+/// ## Don't Include
+/// - Data access
+/// - User settings
+/// - Network calls
+///
+/// ## Lifecycle & Usage
+/// Singleton-ish instance injected in environment; views call it to navigate.
+///
+```
+
 ## File-by-File Reference
 
 ### App/
 
-#### MyAppApp.swift
+#### __sv_projectNameApp.swift
 
-**Purpose:** Composition root. Wires SwiftData container, injects environment objects/values, and mounts the RootView.
-
-**Keep in:** Scene setup, dependency injection, initial analytics event.
-
-**Don't put in:** Business logic, navigation decisions beyond initial wiring, persistence/network code.
-
-**Lifecycle & Usage:** Created at launch by the system; remains minimal and stable.
+Composition root. Wires SwiftData container, injects environment objects/values, and mounts the RootView. Created at launch by the system; remains minimal and stable.
 
 #### AppState.swift
 
-**Purpose:** Ephemeral, cross-feature flags and resolved config (non-persisted).
-
-**Keep in:** Session flags (e.g., isBusy), resolved env snapshot (active environment), lightweight permission/capability snapshots.
-
-**Don't put in:** User data/settings, navigation paths, feature state, analytics counters.
-
-**Lifecycle & Usage:** Instantiated once and injected via .environment(...). Read by views; it doesn't own long-lived data.
+Ephemeral, cross-feature flags and resolved config (non-persisted). Instantiated once and injected via .environment(...). Read by views; it doesn't own long-lived data.
 
 #### Router.swift
 
-**Purpose:** Centralizes navigation (route enum + NavigationStack path helpers).
-
-**Keep in:** Route definitions, push/pop helpers, deep-link entry points.
-
-**Don't put in:** Data access, user settings, network calls.
-
-**Lifecycle & Usage:** Singleton-ish instance injected in environment; views call it to navigate.
+Centralizes navigation (route enum + NavigationStack path helpers). Singleton-ish instance injected in environment; views call it to navigate.
 
 #### RootView.swift
 
-**Purpose:** App-level switcher that chooses which feature tree to show (e.g., Onboarding vs Main).
-
-**Keep in:** Simple branching/composition based on User/AppState.
-
-**Don't put in:** Heavy logic, storage/network behavior.
-
-**Lifecycle & Usage:** Always present; reacts to state and swaps feature trees.
+App-level switcher that chooses which feature tree to show (e.g., Onboarding vs Main). Always present; reacts to state and swaps feature trees.
 
 #### Environment/ServiceEnvironment.swift
 
-**Purpose:** Typed environment registrations for app-wide services (e.g., NetworkClient, theme, auth handle).
+Typed environment registrations for app-wide services (e.g., NetworkClient, theme, auth handle). Initialize services in __sv_projectNameApp and inject via .environment(...). Views retrieve them with @Environment(ServiceType.self).
 
-**Keep in:** Custom EnvironmentKeys and convenience accessors; service wiring.
+### Models/
 
-**Don't put in:** Business rules, feature logic.
+#### User.swift
 
-**Lifecycle & Usage:** Initialize services in MyAppApp and inject via .environment(...). Views retrieve them with @Environment(ServiceType.self).
-
-### Data/
-
-#### Models/User.swift
-
-**Purpose:** SwiftData @Model. Single source of truth for user settings and local counters.
-
-**Keep in:** User ID, settings (e.g., theme/flags), local analytics counters (e.g., totalCoreFeatureUses), relevant timestamps.
-
-**Don't put in:** UI state, routing, transient view flags, secrets.
-
-**Lifecycle & Usage:** Create on first run (or fetch-or-create); update from features; SwiftData persists.
-
-#### Helpers/User+Helpers.swift
-
-**Purpose:** Tiny convenience utilities for User (e.g., fetch-or-create).
-
-**Keep in:** One-liners that prevent duplication (bootstrap, safe lookups).
-
-**Don't put in:** Complex business logic, network sync, heavy queries.
-
-**Lifecycle & Usage:** Called from views when the User record is needed.
+SwiftData @Model. Single source of truth for user settings and local counters. Create on first run via `User.fetchOrCreate(in:)` helper; update from features; SwiftData persists. Includes helper methods like `completeOnboarding()`, `logUsage()`, `updateTheme()`, `reset()`, and `syncToAnalytics()`.
 
 ### Services/
 
 #### NetworkClient.swift
 
-**Purpose:** Generic HTTP transport for one-off "do work" calls (no persistence/sync).
-
-**Keep in:** Base URL, request building, headers, error handling, (de)serialization policy.
-
-**Don't put in:** Feature-specific behavior, global state, business branching.
-
-**Lifecycle & Usage:** Constructed once with base URL; injected via environment; used by feature services.
+Generic HTTP transport for one-off "do work" calls (no persistence/sync). Constructed once with base URL; injected via environment; used by feature services.
 
 #### FeatureServices/ExampleService.swift
 
-**Purpose:** A focused service that uses NetworkClient to perform a single capability (e.g., "generate something").
-
-**Keep in:** Request assembly for that capability, parameter validation, response shaping for the view/domain.
-
-**Don't put in:** Cross-feature utilities, storage, navigation logic.
-
-**Lifecycle & Usage:** Created near the feature (or injected). Stateless; called from views during .task/.onChange.
+A focused service that uses NetworkClient to perform a single capability (e.g., "generate something"). Created near the feature (or injected). Stateless; called from views during .task/.onChange.
 
 #### Analytics/Analytics.swift
 
-**Purpose:** Single entry point for analytics events/traits. Counters themselves live on User.
-
-**Keep in:** Event keys/enums, thin wrappers around the analytics SDK, optional global context.
-
-**Don't put in:** PII bundling, blocking work, feature-specific business logic.
-
-**Lifecycle & Usage:** Called by views upon user actions and after updating User counters.
+Single entry point for analytics events/traits. Counters themselves live on User. Called by views upon user actions and after updating User counters.
 
 ### Features/
 
 #### Onboarding/OnboardingView.swift
 
-**Purpose:** Collect initial preferences and mark onboarding completion on User.
+Main onboarding flow container that orchestrates multi-step profile collection. Mounted for new users; navigates through steps defined in ProfileFieldRegistry; marks onboarding complete on User model.
 
-**Keep in:** Local UI state, bindings to User, simple orchestration via .task/.onChange.
+#### Onboarding/OnboardingStep.swift
 
-**Don't put in:** Global state management, heavy data access layers.
+Enum representing onboarding steps, driven by ProfileField definitions. Used by OnboardingView to determine flow; provides convenience static cases (`.name`, `.ageGroup`, `.interests`).
 
-**Lifecycle & Usage:** Mounted until onboarding completes, then dismissed via router/state.
+#### Onboarding/OnboardingProgressBar.swift
+
+Visual progress indicator for onboarding steps. Displayed in navigation title area; shows current step position.
+
+#### Onboarding/SelectableCard.swift
+
+Reusable card component for single/multi-selection in onboarding. Used in step views for choosing options; demonstrates proper ButtonStyle usage with `configuration.isPressed`.
+
+#### Onboarding/WelcomeStepView.swift
+
+Welcome screen for onboarding flow. First screen shown to new users; optional welcome step before profile fields.
+
+#### Onboarding/NameStepView.swift
+
+Dedicated step view for collecting user's name. Rendered as part of onboarding flow; updates User.displayName.
+
+#### Onboarding/AgeGroupStepView.swift
+
+Dedicated step view for age group selection. Rendered as part of onboarding flow; updates User.ageGroup.
+
+#### Onboarding/InterestsStepView.swift
+
+Dedicated step view for multi-interest selection. Rendered as part of onboarding flow; updates User.interests array.
 
 #### Main/MainView.swift
 
-**Purpose:** Primary app surface; composes core feature entry points.
-
-**Keep in:** Lightweight composition, triggers to services, read-only views into User.
-
-**Don't put in:** Data layers, deep networking, global configuration.
-
-**Lifecycle & Usage:** Lives most of the session; navigates via Router.
+Primary app surface; composes core feature entry points. Lives most of the session; navigates via Router.
 
 #### UserSettings/UserSettingsView.swift
 
-**Purpose:** Edit preferences backed directly by the User model; reflect theme/preferences.
-
-**Keep in:** Bindings to User fields, small validation, optional analytics event on change.
-
-**Don't put in:** Non-user settings, orchestration for other features.
-
-**Lifecycle & Usage:** Reads/writes SwiftData through bindings; emits analytics as needed.
+Edit preferences backed directly by the User model; reflect theme/preferences. Reads/writes SwiftData through bindings; emits analytics as needed.
 
 ### Shared/
 
 #### Theme.swift
 
-**Purpose:** Design tokens (colors, fonts). Single source of truth for styling constants.
-
-**Keep in:** Semantic color tokens, typography presets, reusable design values.
-
-**Don't put in:** View-specific layout logic, business rules, UIKit appearance customizations.
-
-**Lifecycle & Usage:** Imported wherever UI is built; avoid hard-coding values in features.
+Design tokens (colors, fonts). Single source of truth for styling constants. Imported wherever UI is built; avoid hard-coding values in features.
 
 #### Appearance.swift
 
-**Purpose:** Global UIKit appearance proxy customizations that affect SwiftUI components.
+Global UIKit appearance proxy customizations that affect SwiftUI components. Called once during app initialization in __sv_projectNameApp.swift via `Appearance.configure()`.
 
-**Keep in:** UIKit appearance configurations (UIScrollView, UINavigationBar, UITableView, etc.), global behavior tweaks.
+#### Models/ProfileField.swift
 
-**Don't put in:** SwiftUI-specific styling (use Theme.swift), feature-specific logic, stateful configurations.
+Protocol and concrete field implementations defining editable user profile fields. Single source of truth for field metadata used in both onboarding and settings; extend by creating new ProfileField implementations.
 
-**Lifecycle & Usage:** Called once during app initialization in MyAppApp.swift via `Appearance.configure()`.
+#### Models/ProfileFieldRegistry.swift
+
+Central registry of all available profile fields. Add new fields to `allFields` array to make them available throughout the app; queried by onboarding and settings views.
 
 #### Components/PrimaryButton.swift
 
-**Purpose:** Reusable primary CTA style.
-
-**Keep in:** Appearance, accessibility traits, small interactions (press states).
-
-**Don't put in:** Feature actions, analytics, networking.
-
-**Lifecycle & Usage:** Used across features to unify CTAs.
+Reusable primary CTA style. Used across features to unify CTAs.
 
 #### Components/LoadingView.swift
 
-**Purpose:** Standard "busy" presentation.
-
-**Keep in:** Visuals and optional status text.
-
-**Don't put in:** Data fetching, timers.
-
-**Lifecycle & Usage:** Drop-in for blocking work indications.
+Standard "busy" presentation. Drop-in for blocking work indications.
 
 #### Components/EmptyStateView.swift
 
-**Purpose:** Standard empty state (icon + message + optional action).
+Standard empty state (icon + message + optional action). Used when lists/feeds have no content.
 
-**Keep in:** Layout and an optional callback.
+#### Components/ProfileFieldEditors.swift
 
-**Don't put in:** Data mutations, networking.
-
-**Lifecycle & Usage:** Used when lists/feeds have no content.
+Reusable editor components for ProfileField types in settings. Used in UserSettingsView to render editable fields; driven by ProfileField definitions; provides Settings-optimized UI (compact, list-friendly).
 
 #### Extensions/View+Ext.swift
 
-**Purpose:** Generic View helpers used broadly.
-
-**Keep in:** Small, pure modifiers and wrappers.
-
-**Don't put in:** Feature logic, side-effects.
-
-**Lifecycle & Usage:** Keep minimal and well-named to avoid collisions.
+Generic View helpers used broadly. Keep minimal and well-named to avoid collisions.
 
 #### Extensions/Color+Ext.swift
 
-**Purpose:** Color conveniences (e.g., hex init, semantic aliases to Theme/assets).
-
-**Keep in:** Safe initializers, mapping to asset colors.
-
-**Don't put in:** Random ad-hoc constants; prefer Theme/Assets.
-
-**Lifecycle & Usage:** Reference semantic names consistently.
+Color conveniences (e.g., hex init, semantic aliases to Theme/assets). Reference semantic names consistently.
 
 #### Extensions/String+Ext.swift
 
-**Purpose:** Lightweight, pure string utilities.
-
-**Keep in:** Formatting/cleanup helpers used across features.
-
-**Don't put in:** Business-specific parsing, networking.
-
-**Lifecycle & Usage:** Keep tiny; lean on Foundation when possible.
+Lightweight, pure string utilities. Keep tiny; lean on Foundation when possible.
 
 #### Styles/ButtonStyles.swift
 
-**Purpose:** Reusable button styles to enforce consistency.
-
-**Keep in:** Style structs/enums and shared visual rules.
-
-**Don't put in:** Actions, analytics.
-
-**Lifecycle & Usage:** Apply via modifiers.
+Reusable button styles to enforce consistency. Apply via modifiers.
 
 #### Styles/TextFieldStyles.swift
 
-**Purpose:** Consistent input styles.
-
-**Keep in:** Padding, borders, focus visuals.
-
-**Don't put in:** Validation logic, data access.
-
-**Lifecycle & Usage:** Apply across forms/settings.
+Consistent input styles. Apply across forms/settings.
 
 ### Resources/
 
 #### Assets.xcassets
 
-**Purpose:** Images, app icons, color sets.
-
-**Keep in:** Assets referenced by Theme and components.
-
-**Don't put in:** Runtime-generated assets, oversized unused media.
-
-**Lifecycle & Usage:** Reference by semantic names; avoid hard-coded hex in code.
+Images, app icons, color sets. Reference by semantic names; avoid hard-coded hex in code.
 
 #### Fonts/
 
-**Purpose:** Bundled custom fonts.
-
-**Keep in:** Font files + any license/readme.
-
-**Don't put in:** Non-font resources.
-
-**Lifecycle & Usage:** Ensure targets/plist include them; wire via Theme.
+Bundled custom fonts. Ensure targets/plist include them; wire via Theme.
 
 ### Configuration/
 
 #### AppConfig.swift
 
-**Purpose:** Centralized config (base URLs for NetworkClient, feature flags snapshot).
-
-**Keep in:** Static constants or light resolution logic.
-
-**Don't put in:** Secrets in source control, mutable runtime state.
-
-**Lifecycle & Usage:** Read early (e.g., in MyAppApp) and pass into services.
+Centralized config (base URLs for NetworkClient, feature flags snapshot). Read early (e.g., in __sv_projectNameApp) and pass into services.
 
 #### Info.plist
 
-**Purpose:** App metadata and capability declarations.
-
-**Keep in:** Identifiers, permission strings, URL schemes.
-
-**Don't put in:** Dynamic config, secrets.
-
-**Lifecycle & Usage:** Managed by Xcode/build settings; some changes require reinstall.
+App metadata and capability declarations. Managed by Xcode/build settings; some changes require reinstall.
 
 ## Modern Swift Development
 
@@ -941,6 +857,7 @@ private struct StatItem: View {
 - **Always:** Use Swift's type system for safety
 - **Always:** Create files for views
 - **Always:** Keep files under 500 lines; if longer, split it
+- **Always:** Use `ButtonStyle` with `configuration.isPressed` for press feedback instead of gesture tracking
 
 #### DON'T:
 
@@ -950,6 +867,8 @@ private struct StatItem: View {
 - **Never:** Use Combine for simple async operations
 - **Never:** Fight SwiftUI's update mechanism
 - **Never:** Overcomplicate simple features
+- **Never:** Use `DragGesture` inside `ScrollView` for press detection - it conflicts with scroll gestures
+- **Never:** Track button press state manually with gestures when `ButtonStyle` provides `configuration.isPressed`
 
 ### Modern Swift Features
 
@@ -958,6 +877,59 @@ private struct StatItem: View {
 - **Always:** Utilize property wrappers effectively
 - **Always:** Embrace value types where appropriate
 - **Always:** Use protocols for abstraction, not just for testing
+
+## Button Press Feedback Pattern
+
+For interactive elements that need press feedback (like buttons, cards, or selectable items), use `ButtonStyle` with `configuration.isPressed` instead of manual gesture tracking.
+
+### ❌ DON'T: Use DragGesture for press detection
+
+```swift
+// This conflicts with ScrollView and is unnecessarily complex
+Button(action: onTap) {
+  // content
+}
+.simultaneousGesture(
+  DragGesture(minimumDistance: 0)
+    .onChanged { _ in isPressed = true }
+    .onEnded { _ in isPressed = false }
+)
+.conditionalEffect(.pushDown, condition: isPressed)
+```
+
+**Problems:**
+- `DragGesture` conflicts with `ScrollView` gestures
+- Requires manual state management (`@State private var isPressed`)
+- More complex and error-prone
+- Doesn't respect button disabled state automatically
+
+### ✅ DO: Use ButtonStyle with configuration.isPressed
+
+```swift
+Button(action: onTap) {
+  // content
+}
+.buttonStyle(PressableCardStyle())
+
+private struct PressableCardStyle: ButtonStyle {
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .conditionalEffect(
+        .pushDown,
+        condition: configuration.isPressed
+      )
+  }
+}
+```
+
+**Benefits:**
+- No gesture conflicts with ScrollView
+- No manual state management needed
+- Built-in disabled state handling
+- Cleaner, more SwiftUI-idiomatic code
+- Works correctly with accessibility features
+
+See `SelectableCard.swift` and `ButtonStyles.swift` for examples.
 
 ### Summary
 

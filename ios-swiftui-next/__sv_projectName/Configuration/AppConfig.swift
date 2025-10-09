@@ -1,16 +1,30 @@
 import Foundation
 
-/// Centralized configuration for the application
-/// TEMPLATE NOTE: Customize these values for your specific application needs
+/// Centralized configuration for the application.
+///
+/// ## Purpose
+/// Centralized config (base URLs for NetworkClient, feature flags snapshot).
+///
+/// ## Include
+/// - Static constants or light resolution logic
+///
+/// ## Don't Include
+/// - Secrets in source control
+/// - Mutable runtime state
+///
+/// ## Lifecycle & Usage
+/// Read early (e.g., in __sv_projectNameApp) and pass into services.
+///
+// TODO: Customize these values for your specific application needs
 enum AppConfig {
   // MARK: - Feature Flags
 
   /// Enable analytics tracking
-  /// TEMPLATE NOTE: Set to false during development if needed
+  // TODO: Set to false during development if needed
   static let analyticsEnabled = true
 
   /// Enable debug logging
-  /// TEMPLATE NOTE: Should be tied to build configuration
+  // TODO: Should be tied to build configuration
   static let debugLoggingEnabled = {
     #if DEBUG
     return true
@@ -34,6 +48,6 @@ enum AppConfig {
   // MARK: - Local Storage
 
   /// UserDefaults suite name for app preferences
-  /// TEMPLATE NOTE: Customize to match your bundle identifier pattern
+  // TODO: Customize to match your bundle identifier pattern
   static let userDefaultsSuiteName = "com.supervibes.__sv_projectName.defaults"
 }

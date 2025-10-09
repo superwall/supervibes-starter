@@ -1,7 +1,22 @@
 import SwiftUI
 
+/// Consistent input styles.
+///
+/// ## Purpose
+/// Consistent input styles.
+///
+/// ## Include
+/// - Padding, borders, focus visuals
+///
+/// ## Don't Include
+/// - Validation logic
+/// - Data access
+///
+/// ## Lifecycle & Usage
+/// Apply across forms/settings.
+
 // MARK: - Text Field Styles
-// TEMPLATE NOTE: Define reusable text field styles for consistent appearance
+// TODO:  Define reusable text field styles for consistent appearance
 
 /// Standard text field style with border
 struct StandardTextFieldStyle: TextFieldStyle {

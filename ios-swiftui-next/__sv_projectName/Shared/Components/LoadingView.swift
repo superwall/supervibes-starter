@@ -1,7 +1,21 @@
 import SwiftUI
 
-/// Standard loading indicator view
-/// TEMPLATE NOTE: Use this for async operations and data loading states
+/// Standard loading indicator view.
+///
+/// ## Purpose
+/// Standard "busy" presentation.
+///
+/// ## Include
+/// - Visuals and optional status text
+///
+/// ## Don't Include
+/// - Data fetching
+/// - Timers
+///
+/// ## Lifecycle & Usage
+/// Drop-in for blocking work indications.
+///
+// TODO: Use this for async operations and data loading states
 struct LoadingView: View {
   var message: String?
 

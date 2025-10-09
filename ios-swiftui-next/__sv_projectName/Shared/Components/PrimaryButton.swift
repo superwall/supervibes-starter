@@ -1,7 +1,24 @@
 import SwiftUI
 
-/// Primary call-to-action button component
-/// TEMPLATE NOTE: This is a reusable button that maintains consistent styling across the app
+/// Primary call-to-action button component.
+///
+/// ## Purpose
+/// Reusable primary CTA style.
+///
+/// ## Include
+/// - Appearance
+/// - Accessibility traits
+/// - Small interactions (press states)
+///
+/// ## Don't Include
+/// - Feature actions
+/// - Analytics
+/// - Networking
+///
+/// ## Lifecycle & Usage
+/// Used across features to unify CTAs.
+///
+// TODO: This is a reusable button that maintains consistent styling across the app
 struct PrimaryButton: View {
   let title: String
   let action: () -> Void

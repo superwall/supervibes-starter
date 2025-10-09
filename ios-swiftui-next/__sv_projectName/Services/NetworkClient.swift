@@ -1,7 +1,26 @@
 import Foundation
 
-/// Generic HTTP client for making network requests
-/// TEMPLATE NOTE: This is a simple, stateless HTTP transport layer.
+/// Generic HTTP client for making network requests.
+///
+/// ## Purpose
+/// Generic HTTP transport for one-off "do work" calls (no persistence/sync).
+///
+/// ## Include
+/// - Base URL
+/// - Request building
+/// - Headers
+/// - Error handling
+/// - (De)serialization policy
+///
+/// ## Don't Include
+/// - Feature-specific behavior
+/// - Global state
+/// - Business branching
+///
+/// ## Lifecycle & Usage
+/// Constructed once with base URL; injected via environment; used by feature services.
+///
+// TODO: This is a simple, stateless HTTP transport layer.
 /// Customize error handling, authentication, and request/response patterns for your needs.
 @Observable
 final class NetworkClient {
@@ -26,7 +45,7 @@ final class NetworkClient {
   // MARK: - Request Methods
 
   /// Perform a GET request
-  /// TEMPLATE NOTE: Extend with additional HTTP methods as needed
+  // TODO: Extend with additional HTTP methods as needed
   func get<T: Decodable>(
     url: String,
     queryItems: [URLQueryItem]? = nil
@@ -70,7 +89,7 @@ final class NetworkClient {
     request.httpMethod = method
     request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-    // TEMPLATE NOTE: Add authentication headers here
+    // TODO:  Add authentication headers here
     // request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
     return request

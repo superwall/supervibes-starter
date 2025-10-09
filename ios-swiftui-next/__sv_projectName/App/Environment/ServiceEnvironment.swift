@@ -1,7 +1,23 @@
 import SwiftUI
 
+/// Typed environment registrations for app-wide services.
+///
+/// ## Purpose
+/// Typed environment registrations for app-wide services (e.g., NetworkClient, theme, auth handle).
+///
+/// ## Include
+/// - Custom EnvironmentKeys and convenience accessors
+/// - Service wiring
+///
+/// ## Don't Include
+/// - Business rules
+/// - Feature logic
+///
+/// ## Lifecycle & Usage
+/// Initialize services in __sv_projectNameApp and inject via .environment(...). Views retrieve them with @Environment(ServiceType.self).
+
 // MARK: - Service Environment Keys
-// TEMPLATE NOTE: Define custom environment keys for app-wide services
+// TODO:  Define custom environment keys for app-wide services
 
 /// Environment key for NetworkClient
 private struct NetworkClientKey: EnvironmentKey {
@@ -38,7 +54,7 @@ extension EnvironmentValues {
 }
 
 // MARK: - Convenience Accessors
-// TEMPLATE NOTE: These make it easier to access services in views
+// TODO:  These make it easier to access services in views
 
 extension View {
   func withServices(

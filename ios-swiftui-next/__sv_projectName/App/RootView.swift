@@ -1,8 +1,22 @@
 import SwiftUI
 import SwiftData
 
-/// Root view that switches between feature trees based on user state
-/// TEMPLATE NOTE: This is where you decide what the user sees (Onboarding vs Main app)
+/// Root view that switches between feature trees based on user state.
+///
+/// ## Purpose
+/// App-level switcher that chooses which feature tree to show (e.g., Onboarding vs Main).
+///
+/// ## Include
+/// - Simple branching/composition based on User/AppState
+///
+/// ## Don't Include
+/// - Heavy logic
+/// - Storage/network behavior
+///
+/// ## Lifecycle & Usage
+/// Always present; reacts to state and swaps feature trees.
+///
+// TODO: This is where you decide what the user sees (Onboarding vs Main app)
 struct RootView: View {
   @Query private var users: [User]
   @Environment(Router.self) private var router
@@ -25,10 +39,6 @@ struct RootView: View {
       }
     }
     .preferredColorScheme(users.first?.colorScheme)
-    .task {
-      // Track app launch
-      Analytics.track(event: .appLaunched)
-    }
   }
 
   // MARK: - Navigation Destinations
