@@ -43,9 +43,29 @@ final class User {
 
   // MARK: - Preferences
 
+    /// User's preferred theme setting
+  enum Theme: String, Codable, CaseIterable {
+    case light
+    case dark
+    case system
+
+    /// Convert to SwiftUI ColorScheme (nil for system)
+    var colorScheme: ColorScheme? {
+      switch self {
+      case .light: return .light
+      case .dark: return .dark
+      case .system: return nil
+      }
+    }
+
+    /// Display name for UI
+    var displayName: String {
+      rawValue.capitalized
+    }
+  }
+
   /// User's preferred theme (light/dark/system)
-  // TODO: Add theme enum if needed
-  var preferredTheme: String
+  var preferredTheme: Theme
 
   /// User's display name
   // TODO: Optional - remove if not needed
@@ -74,7 +94,7 @@ final class User {
     id: UUID = UUID(),
     hasCompletedOnboarding: Bool = false,
     firstLaunchDate: Date = Date(),
-    preferredTheme: String = "system",
+    preferredTheme: User.Theme = .system,
     displayName: String? = nil,
     ageGroup: String? = nil,
     interests: [String] = [],
@@ -106,13 +126,9 @@ extension User {
     Calendar.current.dateComponents([.day], from: firstLaunchDate, to: Date()).day ?? 0
   }
 
-  /// Convert theme string to SwiftUI ColorScheme
+  /// Convert theme to SwiftUI ColorScheme
   var colorScheme: ColorScheme? {
-    switch preferredTheme {
-    case "light": return .light
-    case "dark": return .dark
-    default: return nil // system
-    }
+    preferredTheme.colorScheme
   }
 
   /// User attributes for analytics
@@ -182,8 +198,8 @@ extension User {
 
   /// Update the user's theme preference
   // TODO: Extend with additional preference setters as needed
-  /// - Parameter theme: The new theme preference ("light", "dark", or "system")
-  func updateTheme(_ theme: String) {
+  /// - Parameter theme: The new theme preference
+  func updateTheme(_ theme: User.Theme) {
     preferredTheme = theme
     lastActivityDate = Date()
   }
@@ -195,7 +211,7 @@ extension User {
     displayName = nil
     ageGroup = nil
     interests = []
-    preferredTheme = "system"
+    preferredTheme = .system
     totalUsage = 0
     lastActivityDate = Date()
   }
@@ -207,3 +223,5 @@ extension User {
   }
 
 }
+
+

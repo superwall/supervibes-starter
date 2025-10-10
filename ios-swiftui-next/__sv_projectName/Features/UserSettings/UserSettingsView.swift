@@ -49,9 +49,9 @@ struct UserSettingsView: View {
       // Preferences Section
       Section("Preferences") {
         Picker("Theme", selection: $user.preferredTheme) {
-          Text("System").tag("system")
-          Text("Light").tag("light")
-          Text("Dark").tag("dark")
+          ForEach(User.Theme.allCases, id: \.self) { theme in
+            Text(theme.displayName).tag(theme)
+          }
         }
         .onChange(of: user.preferredTheme) { _, newValue in
           handleThemeChange(newValue)
@@ -198,7 +198,7 @@ struct UserSettingsView: View {
 
   // MARK: - Actions
 
-  private func handleThemeChange(_ newTheme: String) {
+  private func handleThemeChange(_ newTheme: User.Theme) {
     user.updateTheme(newTheme)
 
     // Save context
@@ -210,7 +210,7 @@ struct UserSettingsView: View {
     // Track analytics
     Analytics.track(
       event: .themeChanged,
-      properties: ["theme": newTheme]
+      properties: ["theme": newTheme.rawValue]
     )
   }
 
