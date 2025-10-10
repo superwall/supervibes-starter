@@ -11,7 +11,7 @@
       ],
       "description": "A simple SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.",
       "postCreateCommand": "xcodegen generate",
-      "postCreatePrompt": "/setup as specified in my Project Overview",
+      "postCreatePrompt": "Build the app as specified in the Project Overview",
       "variables": [
         {
           "name": "Project Name",
@@ -81,7 +81,7 @@
       ],
       "description": "A simple SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.",
       "postCreateCommand": "xcodegen generate",
-      "postCreatePrompt": "Build the app as specified in the Project Overview",
+      "postCreatePrompt": "/setup as specified in my Project Overview",
       "variables": [
         {
           "name": "Project Name",
