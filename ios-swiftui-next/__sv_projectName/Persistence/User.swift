@@ -224,4 +224,42 @@ extension User {
 
 }
 
+// MARK: - Field Options
+
+extension User {
+  /// Represents an interest option with title and icon
+  struct Interest {
+    let title: String
+    let icon: String
+
+    init(_ title: String, icon: String) {
+      self.title = title
+      self.icon = icon
+    }
+  }
+
+  /// Available age group options
+  // TODO: Customize these options for your app
+  static let ageGroupOptions = [
+    "Under 18",
+    "18-24",
+    "25-34",
+    "35-49",
+    "50+"
+  ]
+
+  /// Available interest options with icons
+  // TODO: Customize these options and icons for your app
+  static let interestOptions = [
+    Interest("Cooking", icon: "fork.knife"),
+    Interest("Sports", icon: "figure.run"),
+    Interest("Music", icon: "music.note"),
+    Interest("Reading", icon: "book.fill"),
+    Interest("Travel", icon: "airplane"),
+    Interest("Gaming", icon: "gamecontroller.fill"),
+    Interest("Art", icon: "paintpalette.fill"),
+    Interest("Technology", icon: "laptopcomputer")
+  ]
+}
+
 

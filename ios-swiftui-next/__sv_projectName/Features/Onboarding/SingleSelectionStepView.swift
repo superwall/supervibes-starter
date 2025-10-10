@@ -3,33 +3,30 @@ import SwiftUI
 /// Generic single selection step view for onboarding.
 ///
 /// ## Purpose
-/// Generic step view for single selection from options for any UserField with singleSelection input type.
+/// Reusable step view for single selection from options during onboarding.
 ///
 /// ## Include
 /// - Single-selection UI via SelectableCard
-/// - UserField-driven options and rendering
+/// - Option validation
 ///
 /// ## Don't Include
-/// - Hard-coded options (driven by UserField protocol)
+/// - Business logic
+/// - Data persistence
 ///
 /// ## Lifecycle & Usage
-/// Rendered as part of onboarding flow; works with any UserField where inputType == .singleSelection.
+/// Rendered as part of onboarding flow; accepts title, icon, and options as parameters.
 ///
-// TODO: Generic view driven by UserField for any single selection field
 struct SingleSelectionStepView: View {
-  let field: any UserField
+  let title: String
+  let subtitle: String?
+  let icon: String
+  let options: [String]
   @Binding var selectedValue: String?
+  let isRequired: Bool
   let onContinue: () -> Void
 
   private var canContinue: Bool {
-    !field.isRequired || selectedValue != nil
-  }
-
-  private var options: [String] {
-    if case .singleSelection(let options) = field.inputType {
-      return options
-    }
-    return []
+    !isRequired || selectedValue != nil
   }
 
   var body: some View {
@@ -38,17 +35,17 @@ struct SingleSelectionStepView: View {
         VStack(spacing: 32) {
 
           // Icon
-          Image(systemName: field.icon)
+          Image(systemName: icon)
             .font(.system(size: 60))
             .foregroundStyle(Theme.Colors.primary)
 
           // Title & Subtitle
           VStack(spacing: 12) {
-            Text(field.onboardingTitle ?? field.displayName)
+            Text(title)
               .font(Theme.Typography.title2)
               .multilineTextAlignment(.center)
 
-            if let subtitle = field.onboardingSubtitle {
+            if let subtitle = subtitle {
               Text(subtitle)
                 .font(Theme.Typography.callout)
                 .foregroundStyle(Theme.Colors.secondaryText)
@@ -94,8 +91,12 @@ struct SingleSelectionStepView: View {
 #Preview {
   NavigationStack {
     SingleSelectionStepView(
-      field: AgeGroupField(),
+      title: "What's your age group?",
+      subtitle: "This helps us show relevant content",
+      icon: "calendar",
+      options: ["Under 18", "18-24", "25-34", "35-49", "50+"],
       selectedValue: .constant(nil),
+      isRequired: true,
       onContinue: {}
     )
   }

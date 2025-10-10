@@ -24,34 +24,25 @@ MyApp/
 │
 ├── Features/
 │   ├── Onboarding/
-│   │   ├── OnboardingView.swift
-│   │   ├── OnboardingStep.swift
+│   │   ├── OnboardingView.swift          # Declarative onboarding with inline step definitions
 │   │   ├── WelcomeStepView.swift
-│   │   ├── TextFieldStepView.swift
-│   │   ├── SingleSelectionStepView.swift
-│   │   └── MultiSelectionStepView.swift
+│   │   ├── TextFieldStepView.swift       # Reusable text input step
+│   │   ├── SingleSelectionStepView.swift # Reusable single selection step
+│   │   └── MultiSelectionStepView.swift  # Reusable multi-selection step
 │   ├── Main/
 │   │   └── MainView.swift
 │   └── UserSettings/
-│       └── UserSettingsView.swift
+│       └── UserSettingsView.swift        # Declarative settings with inline field definitions
 │
 ├── Shared/
 │   ├── Theme.swift
 │   ├── Appearance.swift
-│   ├── Models/
-│   │   └── UserField.swift
-│   ├── UserFields/
-│   │   ├── UserFieldRegistry.swift
-│   │   ├── NameField.swift
-│   │   ├── AgeGroupField.swift
-│   │   └── InterestsField.swift
 │   ├── Components/
 │   │   ├── PrimaryButton.swift
 │   │   ├── LoadingView.swift
 │   │   ├── EmptyStateView.swift
 │   │   ├── ProgressBar.swift
-│   │   ├── SelectableCard.swift
-│   │   └── UserFieldEditors.swift
+│   │   └── SelectableCard.swift
 │   ├── Extensions.swift
 │   └── Styles/
 │       ├── ButtonStyles.swift
@@ -99,6 +90,90 @@ Remember: it's your responsibility to maintain the app's architecture; if you fe
 /// Singleton-ish instance injected in environment; views call it to navigate.
 ///
 ```
+
+
+## Onboarding & Settings Pattern
+
+This template uses a **declarative, view-level approach** for onboarding and settings rather than abstraction layers like protocols, registries, or ViewModels.
+
+### Philosophy
+
+- **Define fields where they're used** - Field configurations live in OnboardingView and UserSettingsView, not in separate files
+- **No unnecessary abstractions** - No UserField protocol, no UserFieldRegistry, no field definition files
+- **Easy to customize** - Change step order, add/remove fields, modify options directly in the view
+- **Beginner-friendly** - Simple switch statements and native SwiftUI components
+
+### Customizing Onboarding
+
+**Step 1: Define your options in `User.swift`** (if used in both onboarding and settings)
+
+```swift
+// In User.swift, add to the Field Options extension
+static let goalOptions = ["Learn", "Build", "Explore"]
+```
+
+**Step 2: Add the step in `OnboardingView.swift`**
+
+1. **Add/remove/reorder steps** - Edit the switch statement in the body
+2. **Modify step content** - Change titles, subtitles, icons inline
+3. **Add new fields** - Create a @State variable and add a new case to the switch
+4. **Update data saving** - Edit `completeOnboarding()` to save new fields to the User model
+
+Example:
+```swift
+// Add a new step
+case 4:
+  SingleSelectionStepView(
+    title: "What's your goal?",
+    subtitle: "We'll personalize your experience",
+    icon: "target",
+    options: User.goalOptions,  // Reference from User.swift
+    selectedValue: $selectedGoal,
+    isRequired: true,
+    onContinue: { nextStep() }
+  )
+```
+
+### Customizing Settings
+
+**Step 1: Use User.swift options** (if they match onboarding)
+
+Field options are already defined in User.swift, just reference them.
+
+**Step 2: Add the field in `UserSettingsView.swift`**
+
+1. **Add/remove fields** - Edit the Profile section in the Form
+2. **Modify field UI** - Change labels, icons, pickers inline
+3. **Add new sections** - Add new Section blocks in the Form
+4. **Update User model** - Add corresponding properties to the User model if needed
+
+Example:
+```swift
+// Add a new picker field
+HStack {
+  Image(systemName: "target")
+    .foregroundStyle(Theme.Colors.primary)
+    .frame(width: 24)
+  Picker("Goal", selection: $user.goal) {
+    Text("Not set").tag(nil as String?)
+    ForEach(User.goalOptions, id: \.self) { goal in
+      Text(goal).tag(goal as String?)
+    }
+  }
+}
+```
+
+**Note:** Options that appear in both onboarding and settings should be defined in `User.swift` to maintain a single source of truth.
+
+### Reusable Step Components
+
+The template provides three reusable step view components for onboarding:
+
+- **TextFieldStepView** - Text input (name, email, etc.)
+- **SingleSelectionStepView** - Choose one option (age group, plan, etc.)
+- **MultiSelectionStepView** - Choose multiple options (interests, tags, etc.)
+
+These are simple, parameterized views with no protocol dependencies - just pass in the title, icon, and options you need.
 
 ## Modern Swift Development
 

@@ -3,36 +3,33 @@ import SwiftUI
 /// Generic text field step view for onboarding.
 ///
 /// ## Purpose
-/// Generic step view for collecting text input for any UserField with textField input type.
+/// Reusable step view for collecting text input during onboarding.
 ///
 /// ## Include
 /// - TextField input
 /// - Validation
-/// - UserField-driven rendering
+/// - Auto-focus behavior
 ///
 /// ## Don't Include
-/// - Hard-coded field definitions (driven by UserField protocol)
+/// - Business logic
+/// - Data persistence
 ///
 /// ## Lifecycle & Usage
-/// Rendered as part of onboarding flow; works with any UserField where inputType == .textField.
+/// Rendered as part of onboarding flow; accepts title, icon, and placeholder as parameters.
 ///
-// TODO: Generic view driven by UserField for any text input field
 struct TextFieldStepView: View {
-  let field: any UserField
+  let title: String
+  let subtitle: String?
+  let icon: String
+  let placeholder: String
   @Binding var value: String
+  let isRequired: Bool
   let onContinue: () -> Void
 
   @FocusState private var isFocused: Bool
 
   private var canContinue: Bool {
-    !field.isRequired || !value.trimmingCharacters(in: .whitespaces).isEmpty
-  }
-
-  private var placeholder: String {
-    if case .textField(let placeholder) = field.inputType {
-      return placeholder
-    }
-    return "Enter text"
+    !isRequired || !value.trimmingCharacters(in: .whitespaces).isEmpty
   }
 
   var body: some View {
@@ -41,17 +38,17 @@ struct TextFieldStepView: View {
         VStack(spacing: 32) {
 
           // Icon
-          Image(systemName: field.icon)
+          Image(systemName: icon)
             .font(.system(size: 60))
             .foregroundStyle(Theme.Colors.primary)
 
           // Title & Subtitle
           VStack(spacing: 12) {
-            Text(field.onboardingTitle ?? field.displayName)
+            Text(title)
               .font(Theme.Typography.title2)
               .multilineTextAlignment(.center)
 
-            if let subtitle = field.onboardingSubtitle {
+            if let subtitle = subtitle {
               Text(subtitle)
                 .font(Theme.Typography.callout)
                 .foregroundStyle(Theme.Colors.secondaryText)
@@ -108,8 +105,12 @@ struct TextFieldStepView: View {
 #Preview {
   NavigationStack {
     TextFieldStepView(
-      field: NameField(),
+      title: "What should we call you?",
+      subtitle: "Help us personalize your experience",
+      icon: "person.fill",
+      placeholder: "Your name",
       value: .constant(""),
+      isRequired: true,
       onContinue: {}
     )
   }

@@ -3,30 +3,26 @@ import SwiftUI
 /// Generic multi-selection step view for onboarding.
 ///
 /// ## Purpose
-/// Generic step view for multiple selection from options for any UserField with multiSelection input type.
+/// Reusable step view for multiple selection from options during onboarding.
 ///
 /// ## Include
 /// - Multi-selection UI via SelectableCard
-/// - UserField-driven options and rendering
+/// - Support for optional icons per option
 ///
 /// ## Don't Include
-/// - Hard-coded options (driven by UserField protocol)
+/// - Business logic
+/// - Data persistence
 ///
 /// ## Lifecycle & Usage
-/// Rendered as part of onboarding flow; works with any UserField where inputType == .multiSelection.
+/// Rendered as part of onboarding flow; accepts title, icon, and options (with optional icons) as parameters.
 ///
-// TODO: Generic view driven by UserField for any multi-selection field
 struct MultiSelectionStepView: View {
-  let field: any UserField
+  let title: String
+  let subtitle: String?
+  let icon: String
+  let options: [(title: String, icon: String?)]
   @Binding var selectedValues: Set<String>
   let onComplete: () -> Void
-
-  private var options: [String] {
-    if case .multiSelection(let options) = field.inputType {
-      return options
-    }
-    return []
-  }
 
   var body: some View {
     VStack(spacing: 0) {
@@ -34,17 +30,17 @@ struct MultiSelectionStepView: View {
         VStack(spacing: 32) {
 
           // Icon
-          Image(systemName: field.icon)
+          Image(systemName: icon)
             .font(.system(size: 60))
             .foregroundStyle(Theme.Colors.primary)
 
           // Title & Subtitle
           VStack(spacing: 12) {
-            Text(field.onboardingTitle ?? field.displayName)
+            Text(title)
               .font(Theme.Typography.title2)
               .multilineTextAlignment(.center)
 
-            if let subtitle = field.onboardingSubtitle {
+            if let subtitle = subtitle {
               Text(subtitle)
                 .font(Theme.Typography.callout)
                 .foregroundStyle(Theme.Colors.secondaryText)
@@ -56,13 +52,13 @@ struct MultiSelectionStepView: View {
 
           // Selection Options
           VStack(spacing: 8) {
-            ForEach(options, id: \.self) { option in
+            ForEach(options, id: \.title) { option in
               SelectableCard(
-                title: option,
-                icon: InterestsField.Interest(rawValue: option)?.icon,
-                isSelected: selectedValues.contains(option),
+                title: option.title,
+                icon: option.icon,
+                isSelected: selectedValues.contains(option.title),
                 onTap: {
-                  toggleSelection(option)
+                  toggleSelection(option.title)
                 }
               )
             }
@@ -98,7 +94,15 @@ struct MultiSelectionStepView: View {
 #Preview {
   NavigationStack {
     MultiSelectionStepView(
-      field: InterestsField(),
+      title: "What are you interested in?",
+      subtitle: "Select all that apply",
+      icon: "star.fill",
+      options: [
+        ("Cooking", "fork.knife"),
+        ("Sports", "figure.run"),
+        ("Music", "music.note"),
+        ("Reading", "book.fill")
+      ],
       selectedValues: .constant(["Cooking", "Sports"]),
       onComplete: {}
     )

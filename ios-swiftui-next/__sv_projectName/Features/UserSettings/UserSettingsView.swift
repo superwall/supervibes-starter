@@ -7,6 +7,7 @@ import SwiftUI
 ///
 /// ## Include
 /// - Bindings to User fields
+/// - Field definitions (inline, declarative)
 /// - Small validation
 /// - Optional analytics event on change
 ///
@@ -17,21 +18,73 @@ import SwiftUI
 /// ## Lifecycle & Usage
 /// Reads/writes SwiftData through bindings; emits analytics as needed.
 ///
-// TODO: Customize with your app's settings
+/// ## Customization
+/// To customize settings:
+/// 1. Add/remove fields in the Profile section
+/// 2. Modify field labels, icons, and options inline
+/// 3. Add corresponding properties to the User model if needed
+///
 struct UserSettingsView: View {
   @Bindable var user: User
   @Environment(\.modelContext) private var modelContext
   @Environment(Router.self) private var router
 
   @State private var showingResetConfirmation = false
+  @State private var showingInterestsSheet = false
 
   var body: some View {
     Form {
       // Profile Section
       Section("Profile") {
-        // Dynamic user fields from UserFieldRegistry
-        ForEach(UserFieldRegistry.settingsFields, id: \.key) { field in
-          userFieldEditor(for: field)
+        // Name Field
+        HStack {
+          Image(systemName: "person.fill")
+            .foregroundStyle(Theme.Colors.primary)
+            .frame(width: 24)
+          Text("Name")
+          Spacer()
+          TextField("Your name", text: Binding(
+            get: { user.displayName ?? "" },
+            set: { user.displayName = $0.isEmpty ? nil : $0 }
+          ))
+          .multilineTextAlignment(.trailing)
+          .foregroundStyle(Theme.Colors.secondaryText)
+          .textContentType(.name)
+          .autocapitalization(.words)
+        }
+
+        // Age Group Field
+        HStack {
+          Image(systemName: "calendar")
+            .foregroundStyle(Theme.Colors.primary)
+            .frame(width: 24)
+          Picker("Age Group", selection: $user.ageGroup) {
+            Text("Not set").tag(nil as String?)
+            ForEach(User.ageGroupOptions, id: \.self) { ageGroup in
+              Text(ageGroup).tag(ageGroup as String?)
+            }
+          }
+        }
+
+        // Interests Field
+        HStack {
+          Image(systemName: "star.fill")
+            .foregroundStyle(Theme.Colors.primary)
+            .frame(width: 24)
+          Button {
+            showingInterestsSheet = true
+          } label: {
+            HStack {
+              Text("Interests")
+                .foregroundStyle(Theme.Colors.primaryText)
+              Spacer()
+              Text(user.interests.isEmpty ? "None" : "\(user.interests.count) selected")
+                .foregroundStyle(Theme.Colors.secondaryText)
+              Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundStyle(Theme.Colors.secondaryText)
+            }
+          }
         }
 
         // Static fields
@@ -124,75 +177,12 @@ struct UserSettingsView: View {
     } message: {
       Text("This will clear all your data and return you to onboarding. This action cannot be undone.")
     }
-  }
-
-  // MARK: - User Field Editors
-
-  @ViewBuilder
-  private func userFieldEditor(for field: any UserField) -> some View {
-    switch field.inputType {
-    case .textField:
-      HStack {
-        Image(systemName: field.icon)
-          .foregroundStyle(Theme.Colors.primary)
-          .frame(width: 24)
-        UserFieldTextEditor(
-          field: field,
-          value: bindingForTextField(key: field.key)
-        )
-      }
-
-    case .singleSelection:
-      HStack {
-        Image(systemName: field.icon)
-          .foregroundStyle(Theme.Colors.primary)
-          .frame(width: 24)
-        UserFieldSingleSelectionEditor(
-          field: field,
-          value: bindingForSingleSelection(key: field.key)
-        )
-      }
-
-    case .multiSelection:
-      HStack {
-        Image(systemName: field.icon)
-          .foregroundStyle(Theme.Colors.primary)
-          .frame(width: 24)
-        UserFieldMultiSelectionEditor(
-          field: field,
-          values: bindingForMultiSelection(key: field.key)
-        )
-      }
-    }
-  }
-
-  private func bindingForTextField(key: String) -> Binding<String> {
-    switch key {
-    case "name":
-      return Binding(
-        get: { user.displayName ?? "" },
-        set: { user.displayName = $0.isEmpty ? nil : $0 }
+    .sheet(isPresented: $showingInterestsSheet) {
+      InterestsSelectionSheet(
+        interests: User.interestOptions.map(\.title),
+        selectedInterests: $user.interests
       )
-    default:
-      return .constant("")
-    }
-  }
-
-  private func bindingForSingleSelection(key: String) -> Binding<String?> {
-    switch key {
-    case "ageGroup":
-      return $user.ageGroup
-    default:
-      return .constant(nil)
-    }
-  }
-
-  private func bindingForMultiSelection(key: String) -> Binding<[String]> {
-    switch key {
-    case "interests":
-      return $user.interests
-    default:
-      return .constant([])
+      .presentationDetents([.medium])
     }
   }
 
@@ -232,6 +222,62 @@ struct UserSettingsView: View {
 
     // Navigate back to root (will trigger onboarding)
     router.popToRoot()
+  }
+}
+
+// MARK: - Interests Selection Sheet
+
+/// Sheet view for selecting multiple interests
+private struct InterestsSelectionSheet: View {
+  let interests: [String]
+  @Binding var selectedInterests: [String]
+
+  @Environment(\.dismiss) private var dismiss
+
+  var body: some View {
+    NavigationStack {
+      List {
+        ForEach(interests, id: \.self) { interest in
+          Button {
+            toggleSelection(interest)
+          } label: {
+            HStack(spacing: 12) {
+              Text(interest)
+                .foregroundStyle(Theme.Colors.primaryText)
+
+              Spacer()
+
+              if selectedInterests.contains(interest) {
+                Image(systemName: "checkmark")
+                  .foregroundStyle(Theme.Colors.primary)
+              }
+            }
+          }
+        }
+      }
+      .navigationTitle("Interests")
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .topBarLeading) {
+          Image(systemName: "star.fill")
+            .foregroundStyle(Theme.Colors.primary)
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+          Button("Done") {
+            dismiss()
+          }
+        }
+      }
+    }
+  }
+
+  private func toggleSelection(_ interest: String) {
+    if selectedInterests.contains(interest) {
+      selectedInterests.removeAll { $0 == interest }
+    } else {
+      selectedInterests.append(interest)
+    }
   }
 }
 

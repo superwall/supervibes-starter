@@ -13,53 +13,94 @@ Here's what the user wants you to build:
 ## Features
 
 ### Built-in Functionality
-- **Multi-step onboarding flow** with progress tracking
+- **Multi-step onboarding flow** with progress tracking and reusable step components
 - **User settings & preferences** with SwiftData persistence
 - **Theme system** with semantic color tokens and typography
 - **Analytics integration** ready to connect to your provider
-- **Extensible field system** for collecting user data
+- **Declarative field definitions** - Define onboarding and settings inline, no abstractions
 
 ### Architecture Highlights
 - **Clean separation of concerns** - Persistence, Services, Features, and Shared components
-- **Protocol-driven design** - Extensible UserField system for custom data collection
+- **Declarative, view-level design** - Fields defined where they're used, easy to customize
 - **Modern SwiftUI patterns** - @Observable, @Bindable, NavigationStack
-- **Reusable components** - Buttons, cards, progress bars, and more
+- **Reusable step components** - Text input, single/multi-selection views for onboarding
+- **Beginner-friendly** - Simple switch statements and native SwiftUI, no protocols or registries
 - **Centralized navigation** - Router pattern for app-wide navigation
 
 ## Getting Started
 
-There are three main steps in getting started. 
+There are three main steps in getting started.
 
-1. Design your onboarding experience. Pick 4-6 screens users need to answer about themselves when they install the app. Name, Age & Interests are included by default, but only because they are examples of text, single and multi selection inputs. 
+### 1. Design Your Onboarding Experience
 
-Note: Onboarding is important - it helps you learn who is downloading your app, and gives you the opportunity to segment users down the line, either for price testing or product analytics. This essentially tells you who to market to. For example, asking a users interests for a camera app may seem pointless, but it does a few things. First, it lets the user believe the experience is personalized for them, even if it isn't. Second, it enables you to form and validate hypotheses about which segments have the most willingness to pay and the highest retention. So, always start with thoughtful onboarding questions. 
+Pick 4-6 screens users need to answer about themselves when they install the app. Name, Age & Interests are included by default, but you should use first priciples to come upw ith your own onboarding screens. These are just included as examples of text, single, and multi-selection inputs.
 
-- Add/modify user fields in `Shared/UserFields/` to update onboarding & user settings. 
+**Why onboarding matters:** It helps you learn who is downloading your app and gives you the opportunity to segment users for price testing or product analytics. This tells you who to market to. For example, asking interests in a camera app may seem pointless, but it:
+- Makes users believe the experience is personalized for them
+- Enables you to validate hypotheses about which segments have the most willingness to pay and highest retention
+
+**How to customize:**
+
+**Step A: Define field options in `Persistence/User.swift`** (if they appear in both onboarding and settings)
+
+Field options are centralized in User.swift to maintain consistency. Add your options to the Field Options extension:
 
 ```swift
-// Create a new field in Shared/UserFields/
-struct EmailField: UserField {
-  let key = "email"
-  let displayName = "Email"
-  let icon = "envelope.fill" // SFSymbol
-  let isRequired = true
-  let showInOnboarding = true
-  let showInSettings = true
-  let inputType = UserFieldInputType.textField(placeholder: "your@email.com")
-}
-
-// Register in UserFieldRegistry.swift
-static let allFields: [any UserField] = [
-  NameField(),
-  EmailField(), // Add here
-  AgeGroupField(),
-  InterestsField()
+// In User.swift, add to the Field Options extension
+static let languageOptions = [
+  ("English", "en"),
+  ("Spanish", "es"),
+  ("French", "fr")
 ]
 ```
 
-Doing the above automatically includes it in both Onboarding & Settings as configured. 
+**Step B: Add the onboarding step in `Features/Onboarding/OnboardingView.swift`**
 
-2. Build Your Features
+```swift
+// Add a new step in the switch statement
+case 4:
+  SingleSelectionStepView(
+    title: "Choose your language",
+    subtitle: "We'll use this for the app interface",
+    icon: "globe",
+    options: User.languageOptions.map(\.0),  // Use options from User.swift
+    selectedValue: $selectedLanguage,
+    isRequired: true,
+    onContinue: { nextStep() }
+  )
+```
+
+**Available step components:**
+- `TextFieldStepView` - For text input (name, email, etc.)
+- `SingleSelectionStepView` - For single choice (age group, plan, etc.)
+- `MultiSelectionStepView` - For multiple choices (interests, preferences, etc.)
+
+**Don't forget to:**
+1. Add options to `User.swift` if they're used in both onboarding and settings
+2. Add a `@State` variable for your new field (e.g., `@State private var selectedLanguage: String?`)
+3. Update `completeOnboarding()` to save the data to the User model
+4. Update `totalSteps` count
+5. Update analytics tracking if needed
+
+**Step C: Add the field to settings in `Features/UserSettings/UserSettingsView.swift`**
+
+```swift
+// Add to the Profile section
+HStack {
+  Image(systemName: "globe")
+    .foregroundStyle(Theme.Colors.primary)
+    .frame(width: 24)
+  Picker("Language", selection: $user.language) {
+    ForEach(User.languageOptions, id: \.1) { name, code in
+      Text(name).tag(code)
+    }
+  }
+}
+```
+
+**Note:** By defining options in `User.swift`, changes are automatically consistent across onboarding and settings. 
+
+### 2. Build Your Features
 
 Keep a minimal UX that is easy to use. 
 
@@ -77,7 +118,7 @@ Workout Apps -> .workoutComplete
 Calorie Trackers -> .mealLogged
 Editors -> .projectCreated
 
-3. Choose a Theme
+### 3. Choose a Theme
 
 Customize colors and typography in `Shared/Theme.swift`:
 
@@ -99,10 +140,11 @@ enum Colors {
 3. Register navigation routes in `App/Router.swift`
 
 ### Modifying the User model
-1. Edit `Persistence/User.swift`
+1. Edit `Persistence/User.swift` to add new properties
 2. SwiftData handles migrations automatically for simple changes
-3. Update field bindings in onboarding/settings views
+3. Update field bindings in onboarding/settings views as shown in step 1 above
 
 ### Adding application settings
 1. Add a user property in `Persistence/User.swift`
-2. Add the settings to `Features/UserSettings/UserSettingsView.swift`
+2. Add the field inline in `Features/UserSettings/UserSettingsView.swift` using native SwiftUI components (TextField, Picker, Toggle, etc.)
+3. No need for separate field definition files - define everything where it's used
