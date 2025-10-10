@@ -14,10 +14,10 @@ import SwiftUI
 /// ## Don't Include
 /// - Global state management
 /// - Heavy data access layers
-/// - Field definitions (those belong in ProfileField)
+/// - Field definitions (those belong in UserField)
 ///
 /// ## Lifecycle & Usage
-/// Mounted for new users; navigates through steps defined in ProfileFieldRegistry; marks onboarding complete on User model.
+/// Mounted for new users; navigates through steps defined in UserFieldRegistry; marks onboarding complete on User model.
 ///
 // TODO: Multi-step onboarding using NavigationStack for automatic back button handling
 struct OnboardingView: View {
@@ -52,7 +52,7 @@ struct OnboardingView: View {
             // Progress bar in title
             ToolbarItem(placement: .principal) {
               if currentStepNumber > 0 {
-                OnboardingProgressBar(
+                ProgressBar(
                   current: currentStepNumber,
                   total: OnboardingStep.totalSteps
                 )
@@ -81,12 +81,12 @@ struct OnboardingView: View {
 
   @ViewBuilder
   private func stepView(for step: OnboardingStep) -> some View {
-    let field = step.profileField
+    let field = step.userField
     let isLastStep = step == OnboardingStep.allSteps.last
 
     switch field.inputType {
     case .textField:
-      NameStepView(
+      TextFieldStepView(
         field: field,
         value: bindingForField(key: field.key),
         onContinue: {
@@ -99,7 +99,7 @@ struct OnboardingView: View {
       )
 
     case .singleSelection:
-      AgeGroupStepView(
+      SingleSelectionStepView(
         field: field,
         selectedValue: bindingForOptionalField(key: field.key),
         onContinue: {
@@ -112,7 +112,7 @@ struct OnboardingView: View {
       )
 
     case .multiSelection:
-      InterestsStepView(
+      MultiSelectionStepView(
         field: field,
         selectedValues: bindingForMultiField(key: field.key),
         onComplete: {
@@ -158,7 +158,7 @@ struct OnboardingView: View {
     if let currentStep = currentStep {
       Analytics.track(
         event: .onboardingStepCompleted,
-        properties: ["step": currentStep.profileField.key]
+        properties: ["step": currentStep.userField.key]
       )
     }
 
@@ -182,7 +182,7 @@ struct OnboardingView: View {
       navigationPath.append(nextStep)
       Analytics.track(
         event: .onboardingStepViewed,
-        properties: ["step": nextStep.profileField.key]
+        properties: ["step": nextStep.userField.key]
       )
     } else {
       completeOnboarding()

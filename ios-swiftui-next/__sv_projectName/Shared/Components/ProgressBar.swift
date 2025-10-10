@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Progress bar for onboarding flow.
+/// Reusable progress bar component.
 ///
 /// ## Purpose
-/// Visual progress indicator for onboarding steps.
+/// Generic visual progress indicator showing current/total completion.
 ///
 /// ## Include
 /// - Progress calculation
@@ -11,15 +11,15 @@ import SwiftUI
 /// - Current/total display logic
 ///
 /// ## Don't Include
-/// - Step navigation
+/// - Navigation logic
 /// - Data access
-/// - Feature logic
+/// - Feature-specific behavior
 ///
 /// ## Lifecycle & Usage
-/// Displayed in navigation title area; shows current step position.
+/// Used in navigation bars, forms, or any multi-step flow to show progress.
 ///
-// TODO: Displays compact progress indicator for navigation title
-struct OnboardingProgressBar: View {
+// TODO: Displays compact progress indicator (e.g., in navigation title)
+struct ProgressBar: View {
   let current: Int
   let total: Int
 
@@ -52,9 +52,9 @@ struct OnboardingProgressBar: View {
 
 #Preview {
   VStack(spacing: 20) {
-    OnboardingProgressBar(current: 1, total: 3)
-    OnboardingProgressBar(current: 2, total: 3)
-    OnboardingProgressBar(current: 3, total: 3)
+    ProgressBar(current: 1, total: 3)
+    ProgressBar(current: 2, total: 3)
+    ProgressBar(current: 3, total: 3)
   }
   .padding()
 }

@@ -3,11 +3,11 @@ import Foundation
 /// Represents a step in the onboarding flow.
 ///
 /// ## Purpose
-/// Enum representing onboarding steps, driven by ProfileField definitions.
+/// Enum representing onboarding steps, driven by UserField definitions.
 ///
 /// ## Include
 /// - Step enum cases
-/// - ProfileField lookups via ProfileFieldRegistry
+/// - UserField lookups via UserFieldRegistry
 /// - Step metadata (title, subtitle, icon, isRequired)
 ///
 /// ## Don't Include
@@ -18,41 +18,41 @@ import Foundation
 /// ## Lifecycle & Usage
 /// Used by OnboardingView to determine flow; provides convenience static cases (`.name`, `.ageGroup`, `.interests`).
 ///
-// TODO: Onboarding steps are now driven by ProfileField definitions
+// TODO: Onboarding steps are now driven by UserField definitions
 enum OnboardingStep: Hashable {
-  case field(String) // ProfileField key
+  case field(String) // UserField key
 
-  /// Get the profile field for this step
-  var profileField: any ProfileField {
+  /// Get the user field for this step
+  var userField: any UserField {
     switch self {
     case .field(let key):
-      return ProfileFieldRegistry.field(forKey: key) ?? NameField()
+      return UserFieldRegistry.field(forKey: key) ?? NameField()
     }
   }
 
   /// Display title for the step
   var title: String {
-    profileField.onboardingTitle ?? profileField.displayName
+    userField.onboardingTitle ?? userField.displayName
   }
 
   /// Optional subtitle for additional context
   var subtitle: String? {
-    profileField.onboardingSubtitle
+    userField.onboardingSubtitle
   }
 
   /// SF Symbol icon for the step
   var icon: String {
-    profileField.icon
+    userField.icon
   }
 
   /// Whether this step is required to complete onboarding
   var isRequired: Bool {
-    profileField.isRequired
+    userField.isRequired
   }
 
-  /// All onboarding steps (generated from ProfileFieldRegistry)
+  /// All onboarding steps (generated from UserFieldRegistry)
   static var allSteps: [OnboardingStep] {
-    ProfileFieldRegistry.onboardingFields.map { .field($0.key) }
+    UserFieldRegistry.onboardingFields.map { .field($0.key) }
   }
 
   /// Total number of onboarding steps

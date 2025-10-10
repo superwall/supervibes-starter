@@ -1,33 +1,28 @@
 import SwiftUI
 
-/// Single selection step for onboarding.
+/// Generic multi-selection step view for onboarding.
 ///
 /// ## Purpose
-/// Dedicated step view for age group selection.
+/// Generic step view for multiple selection from options for any UserField with multiSelection input type.
 ///
 /// ## Include
-/// - Single-selection UI via SelectableCard
-/// - AgeGroup enum options
-/// - ProfileField-driven rendering
+/// - Multi-selection UI via SelectableCard
+/// - UserField-driven options and rendering
 ///
 /// ## Don't Include
-/// - Hard-coded options (uses AgeGroupField from ProfileField system)
+/// - Hard-coded options (driven by UserField protocol)
 ///
 /// ## Lifecycle & Usage
-/// Rendered as part of onboarding flow; updates User.ageGroup.
+/// Rendered as part of onboarding flow; works with any UserField where inputType == .multiSelection.
 ///
-// TODO: Generic view driven by ProfileField for any single selection field
-struct AgeGroupStepView: View {
-  let field: any ProfileField
-  @Binding var selectedValue: String?
-  let onContinue: () -> Void
-
-  private var canContinue: Bool {
-    !field.isRequired || selectedValue != nil
-  }
+// TODO: Generic view driven by UserField for any multi-selection field
+struct MultiSelectionStepView: View {
+  let field: any UserField
+  @Binding var selectedValues: Set<String>
+  let onComplete: () -> Void
 
   private var options: [String] {
-    if case .singleSelection(let options) = field.inputType {
+    if case .multiSelection(let options) = field.inputType {
       return options
     }
     return []
@@ -55,6 +50,7 @@ struct AgeGroupStepView: View {
                 .foregroundStyle(Theme.Colors.secondaryText)
                 .multilineTextAlignment(.center)
             }
+
           }
           .padding(.horizontal, 32)
 
@@ -63,10 +59,10 @@ struct AgeGroupStepView: View {
             ForEach(options, id: \.self) { option in
               SelectableCard(
                 title: option,
-                icon: nil,
-                isSelected: selectedValue == option,
+                icon: InterestsField.Interest(rawValue: option)?.icon,
+                isSelected: selectedValues.contains(option),
                 onTap: {
-                  selectedValue = option
+                  toggleSelection(option)
                 }
               )
             }
@@ -78,11 +74,10 @@ struct AgeGroupStepView: View {
         }
       }
 
-      // Continue Button
+      // Finish Button
       PrimaryButton(
-        title: "Continue",
-        action: onContinue,
-        isDisabled: !canContinue
+        title: "Finish",
+        action: onComplete
       )
       .padding(.horizontal, 32)
       .padding(.bottom, 32)
@@ -90,14 +85,22 @@ struct AgeGroupStepView: View {
     .background(Theme.Colors.background)
     .navigationBarTitleDisplayMode(.inline)
   }
+
+  private func toggleSelection(_ value: String) {
+    if selectedValues.contains(value) {
+      selectedValues.remove(value)
+    } else {
+      selectedValues.insert(value)
+    }
+  }
 }
 
 #Preview {
   NavigationStack {
-    AgeGroupStepView(
-      field: AgeGroupField(),
-      selectedValue: .constant(nil),
-      onContinue: {}
+    MultiSelectionStepView(
+      field: InterestsField(),
+      selectedValues: .constant(["Cooking", "Sports"]),
+      onComplete: {}
     )
   }
 }

@@ -1,29 +1,32 @@
 import SwiftUI
 
-/// Multiple selection step for onboarding.
+/// Generic single selection step view for onboarding.
 ///
 /// ## Purpose
-/// Dedicated step view for multi-interest selection.
+/// Generic step view for single selection from options for any UserField with singleSelection input type.
 ///
 /// ## Include
-/// - Multi-selection UI via SelectableCard
-/// - Interest enum options
-/// - ProfileField-driven rendering
+/// - Single-selection UI via SelectableCard
+/// - UserField-driven options and rendering
 ///
 /// ## Don't Include
-/// - Hard-coded options (uses InterestsField from ProfileField system)
+/// - Hard-coded options (driven by UserField protocol)
 ///
 /// ## Lifecycle & Usage
-/// Rendered as part of onboarding flow; updates User.interests array.
+/// Rendered as part of onboarding flow; works with any UserField where inputType == .singleSelection.
 ///
-// TODO: Generic view driven by ProfileField for any multi-selection field
-struct InterestsStepView: View {
-  let field: any ProfileField
-  @Binding var selectedValues: Set<String>
-  let onComplete: () -> Void
+// TODO: Generic view driven by UserField for any single selection field
+struct SingleSelectionStepView: View {
+  let field: any UserField
+  @Binding var selectedValue: String?
+  let onContinue: () -> Void
+
+  private var canContinue: Bool {
+    !field.isRequired || selectedValue != nil
+  }
 
   private var options: [String] {
-    if case .multiSelection(let options) = field.inputType {
+    if case .singleSelection(let options) = field.inputType {
       return options
     }
     return []
@@ -51,7 +54,6 @@ struct InterestsStepView: View {
                 .foregroundStyle(Theme.Colors.secondaryText)
                 .multilineTextAlignment(.center)
             }
-
           }
           .padding(.horizontal, 32)
 
@@ -60,10 +62,10 @@ struct InterestsStepView: View {
             ForEach(options, id: \.self) { option in
               SelectableCard(
                 title: option,
-                icon: Interest(rawValue: option)?.icon,
-                isSelected: selectedValues.contains(option),
+                icon: nil,
+                isSelected: selectedValue == option,
                 onTap: {
-                  toggleSelection(option)
+                  selectedValue = option
                 }
               )
             }
@@ -75,10 +77,11 @@ struct InterestsStepView: View {
         }
       }
 
-      // Finish Button
+      // Continue Button
       PrimaryButton(
-        title: "Finish",
-        action: onComplete
+        title: "Continue",
+        action: onContinue,
+        isDisabled: !canContinue
       )
       .padding(.horizontal, 32)
       .padding(.bottom, 32)
@@ -86,22 +89,14 @@ struct InterestsStepView: View {
     .background(Theme.Colors.background)
     .navigationBarTitleDisplayMode(.inline)
   }
-
-  private func toggleSelection(_ value: String) {
-    if selectedValues.contains(value) {
-      selectedValues.remove(value)
-    } else {
-      selectedValues.insert(value)
-    }
-  }
 }
 
 #Preview {
   NavigationStack {
-    InterestsStepView(
-      field: InterestsField(),
-      selectedValues: .constant(["Cooking", "Sports"]),
-      onComplete: {}
+    SingleSelectionStepView(
+      field: AgeGroupField(),
+      selectedValue: .constant(nil),
+      onContinue: {}
     )
   }
 }

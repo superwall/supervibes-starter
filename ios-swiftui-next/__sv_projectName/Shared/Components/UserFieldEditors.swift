@@ -1,14 +1,14 @@
 import SwiftUI
 
-/// Reusable editor components for ProfileField types in settings.
+/// Reusable editor components for UserField types in settings.
 ///
 /// ## Purpose
-/// Reusable editor components for ProfileField types in settings.
+/// Reusable editor components for UserField types in settings.
 ///
 /// ## Include
-/// - ProfileTextFieldEditor (right-aligned text input)
-/// - ProfileSingleSelectionEditor (native Picker)
-/// - ProfileMultiSelectionEditor (sheet with checkable list)
+/// - UserFieldTextEditor (right-aligned text input)
+/// - UserFieldSingleSelectionEditor (native Picker)
+/// - UserFieldMultiSelectionEditor (sheet with checkable list)
 /// - MultiSelectionSheet
 ///
 /// ## Don't Include
@@ -17,12 +17,12 @@ import SwiftUI
 /// - Validation beyond UI presentation
 ///
 /// ## Lifecycle & Usage
-/// Used in UserSettingsView to render editable fields; driven by ProfileField definitions; provides Settings-optimized UI (compact, list-friendly).
+/// Used in UserSettingsView to render editable fields; driven by UserField definitions; provides Settings-optimized UI (compact, list-friendly).
 
-/// Text field editor for profile fields (used in settings)
+/// Text field editor for user fields (used in settings)
 // TODO: Right-aligned text field with no padding or border for settings lists
-struct ProfileTextFieldEditor: View {
-  let field: any ProfileField
+struct UserFieldTextEditor: View {
+  let field: any UserField
   @Binding var value: String
   var isRequired: Bool = false
 
@@ -43,8 +43,8 @@ struct ProfileTextFieldEditor: View {
 
 /// Single selection editor for settings (uses native Picker)
 // TODO: Dropdown picker for single selection in settings
-struct ProfileSingleSelectionEditor: View {
-  let field: any ProfileField
+struct UserFieldSingleSelectionEditor: View {
+  let field: any UserField
   @Binding var value: String?
 
   var body: some View {
@@ -61,8 +61,8 @@ struct ProfileSingleSelectionEditor: View {
 
 /// Multi selection editor for settings (opens sheet with selection list)
 // TODO: Button that opens sheet for multiple selection
-struct ProfileMultiSelectionEditor: View {
-  let field: any ProfileField
+struct UserFieldMultiSelectionEditor: View {
+  let field: any UserField
   @Binding var values: [String]
   @State private var showingSheet = false
 
@@ -124,7 +124,7 @@ struct MultiSelectionSheet: View {
           } label: {
             HStack(spacing: 12) {
               // Show icon for interests if available
-              if let interest = Interest(rawValue: option) {
+              if let interest = InterestsField.Interest(rawValue: option) {
                 Image(systemName: interest.icon)
                   .foregroundStyle(Theme.Colors.primary)
                   .frame(width: 24)

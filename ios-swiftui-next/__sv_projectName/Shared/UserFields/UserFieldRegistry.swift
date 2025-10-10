@@ -1,9 +1,9 @@
 import Foundation
 
-/// Central registry of all profile fields.
+/// Central registry of all user fields.
 ///
 /// ## Purpose
-/// Central registry of all available profile fields.
+/// Central registry that aggregates all available user fields.
 ///
 /// ## Include
 /// - Static field collections (allFields, onboardingFields, settingsFields)
@@ -13,31 +13,32 @@ import Foundation
 /// - UI code
 /// - Business logic
 /// - Data persistence
+/// - Field definitions (those go in separate files)
 ///
 /// ## Lifecycle & Usage
 /// Add new fields to `allFields` array to make them available throughout the app; queried by onboarding and settings views.
 ///
-// TODO: Add new profile fields here to make them available in onboarding and settings
-struct ProfileFieldRegistry {
-  /// All available profile fields
-  static let allFields: [any ProfileField] = [
+// TODO: Add new user fields to the allFields array to make them available in onboarding and settings
+struct UserFieldRegistry {
+  /// All available user fields
+  static let allFields: [any UserField] = [
     NameField(),
     AgeGroupField(),
     InterestsField()
   ]
 
   /// Fields that should appear in onboarding
-  static var onboardingFields: [any ProfileField] {
+  static var onboardingFields: [any UserField] {
     allFields.filter { $0.showInOnboarding }
   }
 
   /// Fields that should appear in settings
-  static var settingsFields: [any ProfileField] {
+  static var settingsFields: [any UserField] {
     allFields.filter { $0.showInSettings }
   }
 
   /// Find a field by its key
-  static func field(forKey key: String) -> (any ProfileField)? {
+  static func field(forKey key: String) -> (any UserField)? {
     allFields.first { $0.key == key }
   }
 }

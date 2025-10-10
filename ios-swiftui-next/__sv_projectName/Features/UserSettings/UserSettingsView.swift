@@ -29,9 +29,9 @@ struct UserSettingsView: View {
     Form {
       // Profile Section
       Section("Profile") {
-        // Dynamic profile fields from ProfileFieldRegistry
-        ForEach(ProfileFieldRegistry.settingsFields, id: \.key) { field in
-          profileFieldEditor(for: field)
+        // Dynamic user fields from UserFieldRegistry
+        ForEach(UserFieldRegistry.settingsFields, id: \.key) { field in
+          userFieldEditor(for: field)
         }
 
         // Static fields
@@ -126,17 +126,17 @@ struct UserSettingsView: View {
     }
   }
 
-  // MARK: - Profile Field Editors
+  // MARK: - User Field Editors
 
   @ViewBuilder
-  private func profileFieldEditor(for field: any ProfileField) -> some View {
+  private func userFieldEditor(for field: any UserField) -> some View {
     switch field.inputType {
     case .textField:
       HStack {
         Image(systemName: field.icon)
           .foregroundStyle(Theme.Colors.primary)
           .frame(width: 24)
-        ProfileTextFieldEditor(
+        UserFieldTextEditor(
           field: field,
           value: bindingForTextField(key: field.key)
         )
@@ -147,7 +147,7 @@ struct UserSettingsView: View {
         Image(systemName: field.icon)
           .foregroundStyle(Theme.Colors.primary)
           .frame(width: 24)
-        ProfileSingleSelectionEditor(
+        UserFieldSingleSelectionEditor(
           field: field,
           value: bindingForSingleSelection(key: field.key)
         )
@@ -158,7 +158,7 @@ struct UserSettingsView: View {
         Image(systemName: field.icon)
           .foregroundStyle(Theme.Colors.primary)
           .frame(width: 24)
-        ProfileMultiSelectionEditor(
+        UserFieldMultiSelectionEditor(
           field: field,
           values: bindingForMultiSelection(key: field.key)
         )

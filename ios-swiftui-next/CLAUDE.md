@@ -19,7 +19,7 @@ MyApp/
 │   └── Environment/
 │       └── ServiceEnvironment.swift
 │
-├── Models/
+├── Persistence/
 │   └── User.swift
 │
 ├── Services/
@@ -33,12 +33,10 @@ MyApp/
 │   ├── Onboarding/
 │   │   ├── OnboardingView.swift
 │   │   ├── OnboardingStep.swift
-│   │   ├── OnboardingProgressBar.swift
-│   │   ├── SelectableCard.swift
 │   │   ├── WelcomeStepView.swift
-│   │   ├── NameStepView.swift
-│   │   ├── AgeGroupStepView.swift
-│   │   └── InterestsStepView.swift
+│   │   ├── TextFieldStepView.swift
+│   │   ├── SingleSelectionStepView.swift
+│   │   └── MultiSelectionStepView.swift
 │   ├── Main/
 │   │   └── MainView.swift
 │   └── UserSettings/
@@ -48,17 +46,20 @@ MyApp/
 │   ├── Theme.swift
 │   ├── Appearance.swift
 │   ├── Models/
-│   │   ├── ProfileField.swift
-│   │   └── ProfileFieldRegistry.swift
+│   │   └── UserField.swift
+│   ├── UserFields/
+│   │   ├── UserFieldRegistry.swift
+│   │   ├── NameField.swift
+│   │   ├── AgeGroupField.swift
+│   │   └── InterestsField.swift
 │   ├── Components/
 │   │   ├── PrimaryButton.swift
 │   │   ├── LoadingView.swift
 │   │   ├── EmptyStateView.swift
-│   │   └── ProfileFieldEditors.swift
-│   ├── Extensions/
-│   │   ├── View+Ext.swift
-│   │   ├── Color+Ext.swift
-│   │   └── String+Ext.swift
+│   │   ├── ProgressBar.swift
+│   │   ├── SelectableCard.swift
+│   │   └── UserFieldEditors.swift
+│   ├── Extensions.swift
 │   └── Styles/
 │       ├── ButtonStyles.swift
 │       └── TextFieldStyles.swift
@@ -105,166 +106,6 @@ Remember: it's your responsibility to maintain the app's architecture; if you fe
 /// Singleton-ish instance injected in environment; views call it to navigate.
 ///
 ```
-
-## File-by-File Reference
-
-### App/
-
-#### __sv_projectNameApp.swift
-
-Composition root. Wires SwiftData container, injects environment objects/values, and mounts the RootView. Created at launch by the system; remains minimal and stable.
-
-#### AppState.swift
-
-Ephemeral, cross-feature flags and resolved config (non-persisted). Instantiated once and injected via .environment(...). Read by views; it doesn't own long-lived data.
-
-#### Router.swift
-
-Centralizes navigation (route enum + NavigationStack path helpers). Singleton-ish instance injected in environment; views call it to navigate.
-
-#### RootView.swift
-
-App-level switcher that chooses which feature tree to show (e.g., Onboarding vs Main). Always present; reacts to state and swaps feature trees.
-
-#### Environment/ServiceEnvironment.swift
-
-Typed environment registrations for app-wide services (e.g., NetworkClient, theme, auth handle). Initialize services in __sv_projectNameApp and inject via .environment(...). Views retrieve them with @Environment(ServiceType.self).
-
-### Models/
-
-#### User.swift
-
-SwiftData @Model. Single source of truth for user settings and local counters. Create on first run via `User.fetchOrCreate(in:)` helper; update from features; SwiftData persists. Includes helper methods like `completeOnboarding()`, `logUsage()`, `updateTheme()`, `reset()`, and `syncToAnalytics()`.
-
-### Services/
-
-#### NetworkClient.swift
-
-Generic HTTP transport for one-off "do work" calls (no persistence/sync). Constructed once with base URL; injected via environment; used by feature services.
-
-#### FeatureServices/ExampleService.swift
-
-A focused service that uses NetworkClient to perform a single capability (e.g., "generate something"). Created near the feature (or injected). Stateless; called from views during .task/.onChange.
-
-#### Analytics/Analytics.swift
-
-Single entry point for analytics events/traits. Counters themselves live on User. Called by views upon user actions and after updating User counters.
-
-### Features/
-
-#### Onboarding/OnboardingView.swift
-
-Main onboarding flow container that orchestrates multi-step profile collection. Mounted for new users; navigates through steps defined in ProfileFieldRegistry; marks onboarding complete on User model.
-
-#### Onboarding/OnboardingStep.swift
-
-Enum representing onboarding steps, driven by ProfileField definitions. Used by OnboardingView to determine flow; provides convenience static cases (`.name`, `.ageGroup`, `.interests`).
-
-#### Onboarding/OnboardingProgressBar.swift
-
-Visual progress indicator for onboarding steps. Displayed in navigation title area; shows current step position.
-
-#### Onboarding/SelectableCard.swift
-
-Reusable card component for single/multi-selection in onboarding. Used in step views for choosing options; demonstrates proper ButtonStyle usage with `configuration.isPressed`.
-
-#### Onboarding/WelcomeStepView.swift
-
-Welcome screen for onboarding flow. First screen shown to new users; optional welcome step before profile fields.
-
-#### Onboarding/NameStepView.swift
-
-Dedicated step view for collecting user's name. Rendered as part of onboarding flow; updates User.displayName.
-
-#### Onboarding/AgeGroupStepView.swift
-
-Dedicated step view for age group selection. Rendered as part of onboarding flow; updates User.ageGroup.
-
-#### Onboarding/InterestsStepView.swift
-
-Dedicated step view for multi-interest selection. Rendered as part of onboarding flow; updates User.interests array.
-
-#### Main/MainView.swift
-
-Primary app surface; composes core feature entry points. Lives most of the session; navigates via Router.
-
-#### UserSettings/UserSettingsView.swift
-
-Edit preferences backed directly by the User model; reflect theme/preferences. Reads/writes SwiftData through bindings; emits analytics as needed.
-
-### Shared/
-
-#### Theme.swift
-
-Design tokens (colors, fonts). Single source of truth for styling constants. Imported wherever UI is built; avoid hard-coding values in features.
-
-#### Appearance.swift
-
-Global UIKit appearance proxy customizations that affect SwiftUI components. Called once during app initialization in __sv_projectNameApp.swift via `Appearance.configure()`.
-
-#### Models/ProfileField.swift
-
-Protocol and concrete field implementations defining editable user profile fields. Single source of truth for field metadata used in both onboarding and settings; extend by creating new ProfileField implementations.
-
-#### Models/ProfileFieldRegistry.swift
-
-Central registry of all available profile fields. Add new fields to `allFields` array to make them available throughout the app; queried by onboarding and settings views.
-
-#### Components/PrimaryButton.swift
-
-Reusable primary CTA style. Used across features to unify CTAs.
-
-#### Components/LoadingView.swift
-
-Standard "busy" presentation. Drop-in for blocking work indications.
-
-#### Components/EmptyStateView.swift
-
-Standard empty state (icon + message + optional action). Used when lists/feeds have no content.
-
-#### Components/ProfileFieldEditors.swift
-
-Reusable editor components for ProfileField types in settings. Used in UserSettingsView to render editable fields; driven by ProfileField definitions; provides Settings-optimized UI (compact, list-friendly).
-
-#### Extensions/View+Ext.swift
-
-Generic View helpers used broadly. Keep minimal and well-named to avoid collisions.
-
-#### Extensions/Color+Ext.swift
-
-Color conveniences (e.g., hex init, semantic aliases to Theme/assets). Reference semantic names consistently.
-
-#### Extensions/String+Ext.swift
-
-Lightweight, pure string utilities. Keep tiny; lean on Foundation when possible.
-
-#### Styles/ButtonStyles.swift
-
-Reusable button styles to enforce consistency. Apply via modifiers.
-
-#### Styles/TextFieldStyles.swift
-
-Consistent input styles. Apply across forms/settings.
-
-### Resources/
-
-#### Assets.xcassets
-
-Images, app icons, color sets. Reference by semantic names; avoid hard-coded hex in code.
-
-#### Fonts/
-
-Bundled custom fonts. Ensure targets/plist include them; wire via Theme.
-
-### Configuration/
-
-#### AppConfig.swift
-
-Centralized config (base URLs for NetworkClient, feature flags snapshot). Read early (e.g., in __sv_projectNameApp) and pass into services.
-
-#### Info.plist
-
-App metadata and capability declarations. Managed by Xcode/build settings; some changes require reinstall.
 
 ## Modern Swift Development
 

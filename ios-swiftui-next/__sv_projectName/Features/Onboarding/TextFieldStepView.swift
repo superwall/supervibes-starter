@@ -1,24 +1,24 @@
 import SwiftUI
 
-/// Text input step for onboarding.
+/// Generic text field step view for onboarding.
 ///
 /// ## Purpose
-/// Dedicated step view for collecting user's name.
+/// Generic step view for collecting text input for any UserField with textField input type.
 ///
 /// ## Include
 /// - TextField input
 /// - Validation
-/// - ProfileField-driven rendering
+/// - UserField-driven rendering
 ///
 /// ## Don't Include
-/// - Hard-coded field definitions (uses NameField from ProfileField system)
+/// - Hard-coded field definitions (driven by UserField protocol)
 ///
 /// ## Lifecycle & Usage
-/// Rendered as part of onboarding flow; updates User.displayName.
+/// Rendered as part of onboarding flow; works with any UserField where inputType == .textField.
 ///
-// TODO: Generic view driven by ProfileField for any text input field
-struct NameStepView: View {
-  let field: any ProfileField
+// TODO: Generic view driven by UserField for any text input field
+struct TextFieldStepView: View {
+  let field: any UserField
   @Binding var value: String
   let onContinue: () -> Void
 
@@ -107,7 +107,7 @@ struct NameStepView: View {
 
 #Preview {
   NavigationStack {
-    NameStepView(
+    TextFieldStepView(
       field: NameField(),
       value: .constant(""),
       onContinue: {}
