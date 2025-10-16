@@ -3,7 +3,7 @@
   "templates": [
     {
       "folder": "ios-swiftui-next",
-      "name": "iOS SwiftUI Starter",
+      "name": "Supervibes Starter",
       "tags": [
         "ios",
         "swiftui",
@@ -18,6 +18,76 @@
           "variableName": "__sv_projectName",
           "type": "textfield",
           "description": "The internal name for your iOS project",
+          "default": "MyProject",
+          "placeholder": "MyProject",
+          "help": null,
+          "required": true,
+          "validation": {
+            "pattern": "^[a-zA-Z][a-zA-Z0-9]*$",
+            "message": "Must contain only letters and numbers, and cannot start with a number"
+          }
+        },
+        {
+          "name": "Development Team",
+          "variableName": "__sv_developmentTeam",
+          "type": "textfield",
+          "description": "Your Apple Developer Team ID",
+          "default": "0000000000",
+          "placeholder": "0000000000",
+          "help": "Found in your Apple Developer account under Membership Details",
+          "required": true,
+          "validation": {
+            "pattern": "^[A-Z0-9]{10}$",
+            "message": "Must be a 10-character Apple Developer Team ID (uppercase letters and numbers)"
+          }
+        },
+        {
+          "name": "Project Overview",
+          "variableName": "<ProjectOverview/>",
+          "type": "textview",
+          "description": "A brief overview of the project",
+          "default": "",
+          "placeholder": "Describe what you want to build",
+          "help": null,
+          "required": false,
+          "validation": {
+            "maxLength": 2000,
+            "message": "Must be less than 2000 characters"
+          }
+        }
+      ]
+    },
+    {
+      "folder": "ios-swiftui",
+      "name": "Blank Xcode Project",
+      "tags": [
+        "ios",
+        "swiftui",
+        "supervibes"
+      ],
+      "description": "A simple SwiftUI-based iOS application starter for using Supervibes to create native iOS apps.",
+      "postCreateCommand": "xcodegen generate",
+      "postCreatePrompt": "/setup as specified in my Project Overview",
+      "variables": [
+        {
+          "name": "Project Name",
+          "variableName": "__sv_projectName",
+          "type": "textfield",
+          "description": "The internal name for your iOS project",
+          "default": "MyProject",
+          "placeholder": "MyProject",
+          "help": null,
+          "required": true,
+          "validation": {
+            "pattern": "^[a-zA-Z][a-zA-Z0-9]*$",
+            "message": "Must contain only letters and numbers, and cannot start with a number"
+          }
+        },
+        {
+          "name": "Display Name",
+          "variableName": "__sv_displayName",
+          "type": "textfield",
+          "description": "The name for your app as it appears on the home screen",
           "default": "MyProject",
           "placeholder": "MyProject",
           "help": null,
